@@ -1,0 +1,29 @@
+# Never ship the host's install or a stale build into the image — stage 1
+# rebuilds both from the lockfile and source.
+node_modules
+.output
+.nitro
+.wrangler
+dist
+dist-ssr
+
+.git
+.gitignore
+.github
+
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+*.log
+logs
+npm-debug.log*
+.env
+.env.*
+!.env.example
+.dev.vars
+
+.vscode
+.idea
+.DS_Store
+.playwright-mcp

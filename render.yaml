@@ -1,0 +1,14 @@
+# Render Blueprint. Connect the repo to Render as a Blueprint and it reads this
+# file — no build or start command to fill in, because the Dockerfile carries
+# both. Render injects PORT, which the server honours.
+services:
+  - type: web
+    name: digital-brain
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: starter
+    healthCheckPath: /
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
