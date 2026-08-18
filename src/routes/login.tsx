@@ -59,10 +59,14 @@ function Login() {
 
   return (
     <div className="grid min-h-screen lg:grid-cols-[1.05fr_1fr]">
-      <div className="relative hidden flex-col justify-between bg-ink px-12 py-12 lg:flex">
-        <div className="flex items-center gap-4">
+      <div className="relative hidden flex-col justify-between overflow-hidden bg-gradient-to-br from-[#0c0c0c] via-[#7a2c0c] to-[#F0731A] px-12 py-12 lg:flex">
+        <div className="flex flex-col items-start gap-3">
           {/* Dark ground variant of the Wayam mark — renders untouched, no plate needed. */}
-          <img src="/wayam-logo-dark.svg" alt="Wayam AI" className="h-11 w-auto object-contain" />
+          <img
+            src="/wayam-logo-dark.svg"
+            alt="Wayam AI"
+            className="h-32 w-auto object-contain xl:h-40"
+          />
           <div>
             <div className="text-[13px] font-extrabold uppercase tracking-[0.16em] text-ink-foreground">
               Digital Brain
