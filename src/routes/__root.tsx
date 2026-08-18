@@ -82,14 +82,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "Digital Brain is an agentic IT operations platform: a fleet of 15 specialist agents that observe, diagnose, decide and act on incidents, with a human in charge of every decision that matters.",
+          "Digital Brain is an agentic IT operations console — a demo of AI agents that watch a company's IT systems, catch problems, figure out what's wrong, and fix them automatically where safe, asking a human to approve anything risky. It covers the whole workflow: cutting noisy alerts down to real incidents, diagnosing root causes, weighing risk before acting, executing or proposing fixes, and reporting results to leadership. Built as a realistic demo with synthetic data across twenty five screens, branded for Wayam AI with a simple email and password demo login.",
       },
       { name: "author", content: "Wayam AI" },
       { property: "og:title", content: "Digital Brain — Agentic IT Operations" },
       {
         property: "og:description",
         content:
-          "Observe. Understand. Decide. Act. Learn. A closed loop agent fleet for enterprise IT operations, by Wayam AI.",
+          "Digital Brain is an agentic IT operations console — a demo of AI agents that watch a company's IT systems, catch problems, figure out what's wrong, and fix them automatically where safe, asking a human to approve anything risky. It covers the whole workflow: cutting noisy alerts down to real incidents, diagnosing root causes, weighing risk before acting, executing or proposing fixes, and reporting results to leadership. Built as a realistic demo with synthetic data across twenty five screens, branded for Wayam AI with a simple email and password demo login.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

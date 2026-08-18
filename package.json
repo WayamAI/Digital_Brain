@@ -88,5 +88,5 @@
     "typescript-eslint": "^8.56.1",
     "vite": "^8.2.0"
   },
-  "description": "Digital Brain \u2014 agentic IT operations platform by Wayam AI"
+  "description": "Digital Brain is an agentic IT operations console \u2014 a demo of AI agents that watch a company's IT systems, catch problems, figure out what's wrong, and fix them automatically where safe, asking a human to approve anything risky. It covers the whole workflow: cutting noisy alerts down to real incidents, diagnosing root causes, weighing risk before acting, executing or proposing fixes, and reporting results to leadership. Built as a realistic demo with synthetic data across twenty five screens, branded for Wayam AI with a simple email and password demo login."
 }
