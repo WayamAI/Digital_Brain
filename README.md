@@ -1,6 +1,12 @@
-# PepsiCo Ops Console
+# Digital Brain — by Wayam AI
 
-Digital Brain — Agentic IT Operations Platform for PepsiCo | App Prototype Build Prompt
+Agentic IT Operations Platform for PepsiCo | App Prototype Build Prompt
+
+> **Note:** the sections below are the original build brief this prototype was built from, kept as
+> a historical record of the product spec. The application has since been rebranded to Wayam AI —
+> orange primary instead of PepsiCo blue, Wayam logo and favicon, and a demo email/password login —
+> see [Design system](#design-system) and [Authentication](#authentication) further down for the
+> current state.
 
 What This Application Is
 
@@ -433,22 +439,36 @@ This should look like a tool PepsiCo Global IT has been running in production fo
 
 ## Design system
 
-Inherited from the JoulesToWatts Auto Ops front end so the products read as one family.
+Rebranded to Wayam AI — orange primary sampled from the Wayam logo gradient (`#F0731A`).
 
 | | |
 |---|---|
-| **Primary** | Teal `hsl(171 100% 29%)` — primary action, success and Tier 1 are the same colour |
-| **Brand red** | `#B92534`, sampled from the JoulesToWatts mark — logo and critical severity only |
+| **Primary** | Orange `hsl(25 88% 52%)` — primary action, buttons, active nav, Tier 1 |
+| **Success** | Green `hsl(142 71% 35%)` — kept independent from the orange primary so it never reads as a brand action |
+| **Brand red** | `#B92534` — critical severity only |
 | **Accent** | Blue `hsl(210 80% 55%)` — links, focus and "in progress", kept distinct from success |
-| **Tiers** | Tier 1 teal `#009481` · Tier 2 amber `#F59E0B` · Tier 3 indigo `#3F51B5` |
+| **Tiers** | Tier 1 orange `#F0731A` · Tier 2 amber `#F59E0B` · Tier 3 indigo `#3F51B5` |
 | **Typography** | Manrope (200–800) + JetBrains Mono for timestamps, IDs and metrics |
-| **Dark mode** | True neutral dark — `#0f0f0f` / `#1a1a1a` / `#262626` / `#333`, brand teal lifted to `#2fb5a1` |
+| **Dark mode** | True neutral dark — `#0f0f0f` / `#1a1a1a` / `#262626` / `#333`, brand orange lifted to `#fa8d23` |
 
-Tier 3 is indigo rather than the more obvious orange because amber↔orange scored ΔE 9.6 against a
+Tier 3 is indigo rather than a second orange because amber↔orange scored ΔE 9.6 against a
 floor of 15 — the two were hard to separate even with full colour vision. Chart fills use their own
 slightly darker steps in dark mode, since fills on a black ground need a different lightness band.
 
 All colours live as tokens in `src/styles.css`. Never hardcode a colour in a component.
+
+---
+
+## Authentication
+
+Sign in requires any syntactically valid email address and any non empty password — there is no
+real backend, so this is a demo authentication layer (`src/lib/auth.ts`) rather than a production
+auth provider. Session state lives in `localStorage`; every route except `/login` is guarded and
+redirects unauthenticated visitors, including on the browser back button after logout. After
+credentials are accepted, pick a demo role (IT Operator, IT Ops Manager, Platform Engineer or
+CIO/Executive) the same way the original prototype did — that role selection still drives which
+screens make sense to look at first, it does not gate access. Log out from the user menu in the
+top right of the app shell.
 
 ---
 
