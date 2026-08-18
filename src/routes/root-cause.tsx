@@ -78,22 +78,28 @@ function RootCause() {
         title={`Event timeline — ${inc.id} investigation window`}
         desc="13:40–14:25 UTC · deployments, config changes, alerts and tickets"
       >
-        <div className="relative mt-2 h-[86px] rounded-md border border-border bg-muted/40">
-          <div className="absolute inset-x-4 top-1/2 h-px bg-border" />
-          {(detail?.signals ?? []).map((s, i) => (
-            <div
-              key={s.t + s.text}
-              className="absolute -translate-x-1/2"
-              style={{ left: `${8 + i * 21}%`, top: i % 2 ? "56%" : "8%" }}
-            >
-              <div className="w-[150px] rounded-md border border-border bg-card px-2 py-1.5 shadow-sm">
-                <div className="text-[10px] text-muted-foreground">
-                  {s.t} · {s.kind}
+        {/* Fixed-width nodes at percentage offsets don't reflow — scroll the
+            track horizontally on narrow screens instead of letting them
+            overlap or clip. min-w matches desktop width so nothing changes
+            above that. */}
+        <div className="mt-2 overflow-x-auto rounded-md border border-border bg-muted/40">
+          <div className="relative h-[86px] min-w-[640px]">
+            <div className="absolute inset-x-4 top-1/2 h-px bg-border" />
+            {(detail?.signals ?? []).map((s, i) => (
+              <div
+                key={s.t + s.text}
+                className="absolute -translate-x-1/2"
+                style={{ left: `${8 + i * 21}%`, top: i % 2 ? "56%" : "8%" }}
+              >
+                <div className="w-[150px] rounded-md border border-border bg-card px-2 py-1.5 shadow-sm">
+                  <div className="text-[10px] text-muted-foreground">
+                    {s.t} · {s.kind}
+                  </div>
+                  <div className="line-clamp-2 text-[11px] leading-tight">{s.text}</div>
                 </div>
-                <div className="line-clamp-2 text-[11px] leading-tight">{s.text}</div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </Panel>
 
