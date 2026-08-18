@@ -20,6 +20,7 @@ import {
   LifeBuoy,
   ListChecks,
   LogOut,
+  Menu,
   MessagesSquare,
   Plug,
   Radar,
@@ -133,15 +134,26 @@ export function AppShell({
     navigate({ to: "/login", replace: true });
   }
   const [closed, setClosed] = useState<string[]>([]);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const pageTitle = title ?? TITLES[pathname] ?? "Control Tower";
   const section = SECTION_OF[pathname];
 
   return (
     <div className="flex min-h-screen bg-background">
+      {/* Backdrop for the off canvas sidebar below the md breakpoint. */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 z-30 bg-black/40 md:hidden"
+          onClick={() => setMobileOpen(false)}
+          aria-hidden="true"
+        />
+      )}
       <aside
+        onClick={() => setMobileOpen(false)}
         className={cn(
-          "sticky top-0 hidden h-screen shrink-0 flex-col border-r border-sidebar-border bg-nav md:flex",
+          "fixed inset-y-0 left-0 z-40 flex h-screen shrink-0 flex-col border-r border-sidebar-border bg-nav transition-transform duration-200 md:sticky md:top-0 md:z-auto md:translate-x-0",
+          mobileOpen ? "translate-x-0" : "-translate-x-full",
           collapsed ? "w-[64px]" : "w-[244px]",
         )}
       >
@@ -229,6 +241,13 @@ export function AppShell({
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="sticky top-0 z-20 border-b border-border bg-card/95 backdrop-blur">
           <div className="flex flex-wrap items-center gap-3 px-5 py-2.5">
+            <button
+              onClick={() => setMobileOpen(true)}
+              className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground md:hidden"
+              aria-label="Open navigation"
+            >
+              <Menu className="h-5 w-5" />
+            </button>
             <div className="min-w-0">
               <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
                 <Link to="/" className="hover:text-foreground">
