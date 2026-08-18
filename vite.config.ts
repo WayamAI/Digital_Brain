@@ -7,8 +7,11 @@ import tsConfigPaths from "vite-tsconfig-paths";
 // Nitro turns the TanStack Start build into a deployable server. It is a
 // build-only plugin — pulling it in during `vite dev` breaks HMR.
 // `node-server` emits .output/server/index.mjs, which is what the Dockerfile
-// runs. Override with NITRO_PRESET for a different target.
-const NITRO_PRESET = process.env["NITRO_PRESET"] ?? "node-server";
+// runs. Vercel sets its own `VERCEL` env var during builds, so default to
+// the `vercel` preset there (writes `.vercel/output`, Vercel's Build Output
+// API — zero extra config needed) and `node-server` everywhere else.
+// Override either default with NITRO_PRESET.
+const NITRO_PRESET = process.env["NITRO_PRESET"] ?? (process.env["VERCEL"] ? "vercel" : "node-server");
 
 export default defineConfig(async ({ command }) => {
   const plugins = [
