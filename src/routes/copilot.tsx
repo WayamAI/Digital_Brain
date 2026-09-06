@@ -205,7 +205,7 @@ function Copilot() {
       </div>
 
       <Panel
-        className="mt-3"
+        className="mt-4"
         title="Recent Copilot actions"
         desc="Every write back is attributable"
       >

@@ -147,7 +147,7 @@ function ServiceHealth() {
       </div>
 
       <Panel
-        className="mt-3"
+        className="mt-4"
         title="Service health summary"
         desc="All monitored services"
         pad={false}

@@ -111,7 +111,7 @@ function RootCause() {
         </div>
       </Panel>
 
-      <div className="mt-3 grid gap-3 xl:grid-cols-[1fr_1fr_1fr]">
+      <div className="mt-4 grid gap-3 xl:grid-cols-[1fr_1fr_1fr]">
         <Panel title="Logs excerpt" desc="sap-om-api · error stream">
           <pre className="max-h-[200px] overflow-auto rounded-lg bg-ink px-3 py-2.5 text-2xs leading-relaxed text-ink-foreground">
             {`14:06:02  ERROR HikariPool-1 - Connection is not available,
@@ -163,7 +163,7 @@ function RootCause() {
         </Panel>
       </div>
 
-      <div className="mt-3 grid gap-3 xl:grid-cols-[1.4fr_1fr]">
+      <div className="mt-4 grid gap-3 xl:grid-cols-[1.4fr_1fr]">
         <Panel
           title="Agent conclusion"
           right={
