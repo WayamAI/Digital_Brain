@@ -11,7 +11,16 @@ import {
 } from "recharts";
 import { AppIcon } from "@/components/app-icon";
 import { AppShell } from "@/components/app-shell";
-import { Btn, Meter, Panel, Pill, axisProps, tooltipStyle, useRunAction } from "@/components/kit";
+import {
+  Btn,
+  Meter,
+  Panel,
+  Pill,
+  SelectControl,
+  axisProps,
+  tooltipStyle,
+  useRunAction,
+} from "@/components/kit";
 import { incidentDetail, incidents } from "@/data/db";
 import { cn } from "@/lib/utils";
 
@@ -65,17 +74,12 @@ function RootCause() {
       intro="The Root Cause Investigation Agent lines up deployments, config changes, alerts and tickets on one timeline, then ranks causal hypotheses with evidence."
       actions={
         <>
-          <select
+          <SelectControl
+            label="Incident under investigation"
             value={id}
-            onChange={(e) => setId(e.target.value)}
-            className="rounded-lg border border-default bg-raised px-2.5 py-1.5 text-xs"
-          >
-            {incidents.map((i) => (
-              <option key={i.id} value={i.id}>
-                {i.id} · {i.service}
-              </option>
-            ))}
-          </select>
+            options={incidents.map((i) => i.id)}
+            onChange={setId}
+          />
           <Btn variant="outline" onClick={() => run("Re analysis complete — conclusion unchanged")}>
             {running ? <AppIcon name="loading" size="sm" spin /> : null} Re analyze
           </Btn>

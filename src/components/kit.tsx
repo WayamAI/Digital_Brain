@@ -390,6 +390,45 @@ export function FilterChip({
 }
 
 /**
+ * A select that matches FilterChip. Native selects drag in the browser's own
+ * arrow and metrics, which reads as a foreign control next to the chips — so
+ * the appearance is reset and the chevron is ours.
+ */
+export function SelectControl({
+  value,
+  onChange,
+  options,
+  label,
+  className,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+  options: string[];
+  label: string;
+  className?: string | undefined;
+}) {
+  return (
+    <span className={cn("relative inline-flex items-center", className)}>
+      <select
+        aria-label={label}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="transition-ui h-7 cursor-pointer appearance-none rounded-full border border-default bg-action py-0 pl-3 pr-7 type-caption font-medium text-secondary outline-none hover:bg-raised hover:text-primary focus-visible:ring-2 focus-visible:ring-ring/40"
+      >
+        {options.map((o) => (
+          <option key={o}>{o}</option>
+        ))}
+      </select>
+      <AppIcon
+        name="chevronDown"
+        size="xs"
+        className="pointer-events-none absolute right-2.5 text-icon-tertiary"
+      />
+    </span>
+  );
+}
+
+/**
  * Filter bar. Small option sets render as chips — faster to scan and to hit
  * than a select; anything longer stays a select so the bar cannot run away.
  */
@@ -420,16 +459,12 @@ export function Filters({
                 </FilterChip>
               ))
             ) : (
-              <select
-                aria-label={g.label}
+              <SelectControl
+                label={g.label}
                 value={current}
-                onChange={(e) => onChange(g.key, e.target.value)}
-                className="transition-ui h-7 rounded-full border border-default bg-action px-2.5 type-caption text-secondary outline-none hover:bg-raised focus-visible:ring-2 focus-visible:ring-ring/40"
-              >
-                {options.map((o) => (
-                  <option key={o}>{o}</option>
-                ))}
-              </select>
+                options={options}
+                onChange={(v) => onChange(g.key, v)}
+              />
             )}
           </div>
         );

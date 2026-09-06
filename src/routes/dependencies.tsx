@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/app-shell";
-import { Btn, KeyVals, Panel, Pill } from "@/components/kit";
+import { Btn, KeyVals, Panel, Pill, SelectControl } from "@/components/kit";
 import { depGraph, nodeInfo } from "@/data/db";
 import { cn } from "@/lib/utils";
 
@@ -217,15 +217,12 @@ function Dependencies() {
       intro="Topology is discovered continuously from integrations — CMDB, cloud control planes and traffic traces — not maintained by hand."
       actions={
         <>
-          <select
+          <SelectControl
+            label="Focus service"
             value={sel}
-            onChange={(e) => setSel(e.target.value)}
-            className="rounded-lg border border-default bg-raised px-2.5 py-1.5 text-xs"
-          >
-            {Object.keys(nodeInfo).map((n) => (
-              <option key={n}>{n}</option>
-            ))}
-          </select>
+            options={Object.keys(nodeInfo)}
+            onChange={setSel}
+          />
           <Btn
             variant={sim ? "danger" : "outline"}
             onClick={() => {
