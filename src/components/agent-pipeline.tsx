@@ -1,33 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import {
-  Activity,
-  ArrowRight,
-  Building2,
-  Check,
-  ChevronRight,
-  Circle,
-  ClipboardList,
-  CircuitBoard,
-  DollarSign,
-  FileText,
-  Gauge,
-  GitBranch,
-  Hand,
-  LifeBuoy,
-  ListChecks,
-  Loader2,
-  Lock,
-  MessagesSquare,
-  Radar,
-  RotateCcw,
-  Search,
-  ShieldAlert,
-  ShieldCheck,
-  TrendingUp,
-  X,
-  Zap,
-} from "lucide-react";
+import { AppIcon } from "@/components/app-icon";
+import type { IconName } from "@/components/icons";
 import { Btn, Panel, Pill } from "@/components/kit";
 import { agents, type Incident } from "@/data/db";
 import {
@@ -41,22 +15,24 @@ import { cn } from "@/lib/utils";
 
 /* ------------------------------------------------------------------ */
 
-const AGENT_ICON: Record<string, typeof Activity> = {
-  "alert-noise": Radar,
-  "service-health": Activity,
-  "dependency-impact": GitBranch,
-  "root-cause": Search,
-  "problem-mgmt": ListChecks,
-  knowledge: LifeBuoy,
-  predictive: TrendingUp,
-  "change-risk": ClipboardList,
-  capacity: Gauge,
-  "incident-resolution": Zap,
-  copilot: MessagesSquare,
-  cost: DollarSign,
-  compliance: ShieldCheck,
-  vendor: Building2,
-  executive: FileText,
+/** Agent slug -> icon concept. Deliberately the same glyphs the sidebar uses
+ *  for the matching destination — one concept, one icon, everywhere. */
+const AGENT_ICON: Record<string, IconName> = {
+  "alert-noise": "alertNoise",
+  "service-health": "serviceHealth",
+  "dependency-impact": "dependency",
+  "root-cause": "rootCause",
+  "problem-mgmt": "problem",
+  knowledge: "knowledge",
+  predictive: "predictive",
+  "change-risk": "changeRisk",
+  capacity: "capacity",
+  "incident-resolution": "dispatch",
+  copilot: "copilot",
+  cost: "cost",
+  compliance: "compliance",
+  vendor: "vendor",
+  executive: "briefing",
 };
 
 const AGENT_BY_SLUG = Object.fromEntries(agents.map((a) => [a.slug, a]));
@@ -68,39 +44,39 @@ type StepState = { state: StepPhase; phase?: string | undefined; secs?: string |
 type RunPhase = "idle" | "running" | "gate" | "halted" | "complete";
 
 const NODE_CLASS: Record<StepPhase, string> = {
-  idle: "border-border bg-card text-muted-foreground",
-  running: "border-accent bg-info-soft text-accent pipe-ping",
-  done: "border-ok bg-ok-soft text-ok",
-  gate: "border-warn bg-warn-soft text-warn-ink",
-  approved: "border-ok bg-ok-soft text-ok",
-  rejected: "border-crit bg-crit-soft text-crit",
+  idle: "border-default bg-raised text-tertiary",
+  running: "border-info bg-info-bg text-info pipe-ping",
+  done: "border-success bg-success-bg text-success",
+  gate: "border-warning bg-warning-bg text-warning-content",
+  approved: "border-success bg-success-bg text-success",
+  rejected: "border-error bg-error-bg text-error",
   human: "border-human bg-human-soft text-human",
 };
 
 const CARD_CLASS: Record<StepPhase, string> = {
-  idle: "border-border opacity-55",
-  running: "border-accent/55 shadow-[0_0_18px_var(--color-info-soft)]",
-  done: "border-ok/35",
-  gate: "border-warn/60 shadow-[0_0_20px_var(--color-warn-soft)]",
-  approved: "border-ok/35",
-  rejected: "border-crit/50",
+  idle: "border-default opacity-55",
+  running: "border-info/55 shadow-[0_0_18px_var(--color-info-soft)]",
+  done: "border-success/35",
+  gate: "border-warning/60 shadow-[0_0_20px_var(--color-warn-soft)]",
+  approved: "border-success/35",
+  rejected: "border-error/50",
   human: "border-human/55 shadow-[0_0_20px_var(--color-human-soft)]",
 };
 
 const ICON_TILE: Record<StepPhase, string> = {
-  idle: "bg-muted text-muted-foreground",
-  running: "bg-info-soft text-accent",
-  done: "bg-ok-soft text-ok",
-  gate: "bg-warn-soft text-warn-ink",
-  approved: "bg-ok-soft text-ok",
-  rejected: "bg-crit-soft text-crit",
+  idle: "bg-action text-tertiary",
+  running: "bg-info-bg text-info",
+  done: "bg-success-bg text-success",
+  gate: "bg-warning-bg text-warning-content",
+  approved: "bg-success-bg text-success",
+  rejected: "bg-error-bg text-error",
   human: "bg-human-soft text-human",
 };
 
 const METRIC_CLASS: Record<MetricTone, string> = {
-  ok: "text-ok",
-  warn: "text-warn-ink",
-  crit: "text-crit",
+  ok: "text-success",
+  warn: "text-warning-content",
+  crit: "text-error",
   human: "text-human",
 };
 
@@ -110,20 +86,21 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 export function TierBanner({ tier }: { tier: Incident["tier"] }) {
   const meta = tierMeta[tier];
-  const Icon = meta.tone === "ok" ? ShieldCheck : meta.tone === "warn" ? ShieldAlert : Hand;
+  const icon: IconName =
+    meta.tone === "ok" ? "compliance" : meta.tone === "warn" ? "shieldAlert" : "human";
   const skin =
     meta.tone === "ok"
-      ? "border-ok/30 bg-ok-soft text-ok"
+      ? "border-success/30 bg-success-bg text-success"
       : meta.tone === "warn"
-        ? "border-warn/35 bg-warn-soft text-warn-ink"
+        ? "border-warning/35 bg-warning-bg text-warning-content"
         : "border-human/30 bg-human-soft text-human";
 
   return (
     <div className={cn("flex items-start gap-3 rounded-lg border px-4 py-3", skin)}>
-      <Icon className="mt-0.5 h-4.5 w-4.5 shrink-0" strokeWidth={1.9} />
+      <AppIcon name={icon} size="lg" className="mt-0.5" />
       <div className="min-w-0">
-        <div className="text-[13px] font-semibold">{meta.label}</div>
-        <p className="mt-0.5 text-[11.5px] leading-relaxed opacity-85">{meta.blurb}</p>
+        <div className="text-sm font-semibold">{meta.label}</div>
+        <p className="mt-0.5 text-2xs leading-relaxed opacity-85">{meta.blurb}</p>
       </div>
     </div>
   );
@@ -135,12 +112,15 @@ function Metrics({ items }: { items: NonNullable<PipelineStep["metrics"]> }) {
   return (
     <div className="grid gap-2 [grid-template-columns:repeat(auto-fit,minmax(112px,1fr))]">
       {items.map((m) => (
-        <div key={m.l} className="rounded-md border border-border bg-muted/50 px-2.5 py-2">
-          <div className="text-[8.5px] font-extrabold uppercase tracking-[0.09em] text-muted-foreground">
+        <div key={m.l} className="rounded-md border border-default bg-action/50 px-2.5 py-2">
+          <div className="text-4xs font-extrabold uppercase tracking-[0.09em] text-tertiary">
             {m.l}
           </div>
           <div
-            className={cn("num mt-0.5 text-[16px] font-extrabold", m.tone && METRIC_CLASS[m.tone])}
+            className={cn(
+              "num mt-0.5 font-display text-display-md",
+              m.tone && METRIC_CLASS[m.tone],
+            )}
           >
             {m.v}
           </div>
@@ -154,9 +134,9 @@ function Findings({ items, mark = "›" }: { items: string[]; mark?: string }) {
   return (
     <div className="space-y-1.5">
       {items.map((f) => (
-        <div key={f} className="flex items-baseline gap-2 text-[12px]">
-          <span className="num shrink-0 text-[11px] font-bold text-accent">{mark}</span>
-          <span className="text-muted-foreground">{f}</span>
+        <div key={f} className="flex items-baseline gap-2 text-xs">
+          <span className="num shrink-0 text-2xs font-bold text-info">{mark}</span>
+          <span className="text-tertiary">{f}</span>
         </div>
       ))}
     </div>
@@ -173,27 +153,27 @@ function RunbookList({ steps }: { steps: RunbookStep[] }) {
           <div
             key={r.step}
             className={cn(
-              "flex items-baseline gap-2.5 rounded-md border px-3 py-2 text-[12.5px]",
-              held ? "border-warn/45 bg-warn-soft" : "border-border bg-muted/50",
+              "flex items-baseline gap-2.5 rounded-md border px-3 py-2 text-xs",
+              held ? "border-warning/45 bg-warning-bg" : "border-default bg-action/50",
             )}
           >
             <span
               className={cn(
-                "num shrink-0 text-[10px] font-extrabold",
-                held ? "text-warn-ink" : done ? "text-ok" : "text-muted-foreground",
+                "num shrink-0 text-3xs font-extrabold",
+                held ? "text-warning-content" : done ? "text-success" : "text-tertiary",
               )}
             >
               {String(i + 1).padStart(2, "0")}
             </span>
-            <span className={cn("min-w-0 flex-1", !done && !held && "text-muted-foreground")}>
+            <span className={cn("min-w-0 flex-1", !done && !held && "text-tertiary")}>
               {r.step}
             </span>
             <span className="ml-auto flex shrink-0 items-center gap-1.5">
               <Pill tone={r.tier === "Tier 1" ? "ok" : r.tier === "Tier 2" ? "warn" : "human"}>
                 {r.tier}
               </Pill>
-              {done && <Check className="h-3.5 w-3.5 text-ok" />}
-              {held && <Lock className="h-3.5 w-3.5 text-warn-ink" />}
+              {done && <AppIcon name="check" size="sm" className="text-success" />}
+              {held && <AppIcon name="lock" size="sm" className="text-warning-content" />}
             </span>
           </div>
         );
@@ -212,7 +192,7 @@ function Elapsed({ running }: { running: boolean }) {
   const m = Math.floor(secs / 60);
   const s = secs % 60;
   return (
-    <span className="num text-[11px] text-muted-foreground">
+    <span className="num text-2xs text-tertiary">
       {m}:{String(s).padStart(2, "0")} elapsed
     </span>
   );
@@ -310,10 +290,10 @@ export function AgentPipeline({ incident, scenario }: { incident: Incident; scen
       {/* ---- dispatch bar ---- */}
       <div className="card-surface mt-3 flex flex-wrap items-center gap-x-5 gap-y-3 px-4 py-3.5">
         <div className="min-w-0">
-          <div className="text-[13.5px] font-semibold">
+          <div className="text-sm font-semibold">
             {scenario.replay ? "Replay agent pipeline" : "Dispatch agent pipeline"}
           </div>
-          <p className="mt-0.5 max-w-[62ch] text-[11.5px] leading-relaxed text-muted-foreground">
+          <p className="mt-0.5 max-w-[62ch] text-2xs leading-relaxed text-tertiary">
             {scenario.headline} Each agent receives the previous agent's output as its input.
           </p>
         </div>
@@ -322,7 +302,7 @@ export function AgentPipeline({ incident, scenario }: { incident: Incident; scen
           {phase === "gate" && <Pill tone="warn">Held — your decision required</Pill>}
           {finished ? (
             <Btn onClick={reset}>
-              <RotateCcw className="h-3.5 w-3.5" />
+              <AppIcon name="retry" size="sm" />
               {phase === "halted" ? "Reset pipeline" : "Run again"}
             </Btn>
           ) : (
@@ -332,12 +312,12 @@ export function AgentPipeline({ incident, scenario }: { incident: Incident; scen
             >
               {running || phase === "gate" ? (
                 <>
-                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  <AppIcon name="loading" size="sm" spin />
                   {phase === "gate" ? "Awaiting approval…" : "Agents running…"}
                 </>
               ) : (
                 <>
-                  <Zap className="h-3.5 w-3.5" />
+                  <AppIcon name="dispatch" size="sm" />
                   {scenario.replay ? "Replay pipeline" : "Dispatch agents"}
                 </>
               )}
@@ -352,7 +332,7 @@ export function AgentPipeline({ incident, scenario }: { incident: Incident; scen
         title="Agent pipeline"
         desc={`${steps.length} agents · ${tierMeta[scenario.tier].label}`}
         right={
-          <span className="num text-[11px] text-muted-foreground">
+          <span className="num text-2xs text-tertiary">
             {complete} / {steps.length} complete
           </span>
         }
@@ -417,22 +397,22 @@ function PipelineRow({
   onReject: () => void;
 }) {
   const agent = AGENT_BY_SLUG[step.agent];
-  const Icon = AGENT_ICON[step.agent] ?? CircuitBoard;
+  const icon = AGENT_ICON[step.agent] ?? "node";
   const s = state.state;
   const revealed = s !== "idle" && s !== "running";
 
-  const NodeIcon =
+  const nodeIcon: IconName =
     s === "running"
-      ? Loader2
+      ? "loading"
       : s === "gate"
-        ? ShieldAlert
+        ? "shieldAlert"
         : s === "rejected"
-          ? X
+          ? "close"
           : s === "human"
-            ? Hand
+            ? "human"
             : s === "done" || s === "approved"
-              ? Check
-              : Circle;
+              ? "check"
+              : "circle";
 
   const statusPill =
     s === "idle" ? (
@@ -461,16 +441,13 @@ function PipelineRow({
             NODE_CLASS[s],
           )}
         >
-          <NodeIcon
-            className={cn("h-3.5 w-3.5", s === "running" && "animate-spin")}
-            strokeWidth={2.4}
-          />
+          <AppIcon name={nodeIcon} size="sm" spin={s === "running"} />
         </div>
         {!last && (
           <div
             className={cn(
               "relative my-1 min-h-3.5 w-0.5 flex-1 overflow-hidden",
-              s === "done" || s === "approved" ? "bg-ok/50" : "bg-border",
+              s === "done" || s === "approved" ? "bg-success/50" : "bg-border",
               s === "running" && "pipe-flow",
             )}
           />
@@ -481,7 +458,7 @@ function PipelineRow({
       <div className="min-w-0 pb-4">
         <div
           className={cn(
-            "overflow-hidden rounded-xl border bg-card transition-all duration-300",
+            "overflow-hidden rounded-xl border bg-raised transition-all duration-300",
             CARD_CLASS[s],
           )}
         >
@@ -492,46 +469,44 @@ function PipelineRow({
                 ICON_TILE[s],
               )}
             >
-              <Icon className="h-4 w-4" strokeWidth={1.9} />
+              <AppIcon name={icon} size="md" />
             </div>
             <div className="min-w-0">
               {agent ? (
                 <Link
                   to="/agents/$slug"
                   params={{ slug: agent.slug }}
-                  className="text-[13px] font-bold hover:text-accent"
+                  className="text-sm font-bold hover:text-info"
                 >
                   {agent.name}
                 </Link>
               ) : (
-                <span className="text-[13px] font-bold">{step.agent}</span>
+                <span className="text-sm font-bold">{step.agent}</span>
               )}
-              <div className="num text-[10px] text-muted-foreground">
+              <div className="num text-3xs text-tertiary">
                 agent://{step.agent}
                 {agent ? ` · ${agent.stage} · ${agent.tier}` : ""}
               </div>
             </div>
             <div className="ml-auto flex shrink-0 items-center gap-2">
               {statusPill}
-              {state.secs && (
-                <span className="num text-[10.5px] text-muted-foreground">{state.secs}</span>
-              )}
+              {state.secs && <span className="num text-3xs text-tertiary">{state.secs}</span>}
             </div>
           </div>
 
           {s === "running" && state.phase && (
-            <div className="flex items-center gap-2 px-4 pb-3 text-[12px] font-semibold text-accent">
+            <div className="flex items-center gap-2 px-4 pb-3 text-xs font-semibold text-info">
               <span className="relative flex h-1.5 w-1.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75" />
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent" />
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-info opacity-75" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-info" />
               </span>
               {state.phase}…
             </div>
           )}
 
           {revealed && (
-            <div className="pipe-reveal space-y-3.5 border-t border-border px-4 py-3.5">
-              <p className="text-[12.5px] leading-relaxed text-muted-foreground">{step.say}</p>
+            <div className="pipe-reveal space-y-3.5 border-t border-default px-4 py-3.5">
+              <p className="text-xs leading-relaxed text-tertiary">{step.say}</p>
               {step.metrics && <Metrics items={step.metrics} />}
               {step.find && <Findings items={step.find} />}
             </div>
@@ -552,8 +527,8 @@ function PipelineRow({
           {step.human && s === "human" && <HumanPanel human={step.human} />}
 
           {step.hand && revealed && s !== "gate" && s !== "rejected" && (
-            <div className="flex items-center gap-2 border-t border-dashed border-border bg-muted/50 px-4 py-2.5 text-[11.5px] text-muted-foreground">
-              <ArrowRight className="h-3.5 w-3.5 shrink-0" />
+            <div className="flex items-center gap-2 border-t border-dashed border-default bg-action/50 px-4 py-2.5 text-2xs text-tertiary">
+              <AppIcon name="arrowRight" size="sm" className="shrink-0" />
               {step.hand}
             </div>
           )}
@@ -580,32 +555,30 @@ function GatePanel({
 }) {
   if (state === "approved") {
     return (
-      <div className="pipe-reveal flex items-start gap-2.5 border-t border-border bg-ok-soft px-4 py-3">
-        <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-ok" />
-        <div className="text-[12.5px] font-semibold text-ok">{gate.approvedBy}</div>
+      <div className="pipe-reveal flex items-start gap-2.5 border-t border-default bg-success-bg px-4 py-3">
+        <AppIcon name="compliance" size="md" className="mt-0.5 shrink-0 text-success" />
+        <div className="text-xs font-semibold text-success">{gate.approvedBy}</div>
       </div>
     );
   }
 
   if (state === "rejected") {
     return (
-      <div className="pipe-reveal space-y-1.5 border-t border-border bg-crit-soft px-4 py-3">
+      <div className="pipe-reveal space-y-1.5 border-t border-default bg-error-bg px-4 py-3">
         <div className="flex items-start gap-2.5">
-          <X className="mt-0.5 h-4 w-4 shrink-0 text-crit" />
-          <div className="text-[12.5px] font-semibold text-crit">{halted.title}</div>
+          <AppIcon name="close" size="md" className="mt-0.5 shrink-0 text-error" />
+          <div className="text-xs font-semibold text-error">{halted.title}</div>
         </div>
-        <p className="pl-6.5 text-[11.5px] leading-relaxed text-muted-foreground">
-          {halted.detail}
-        </p>
+        <p className="pl-6.5 text-2xs leading-relaxed text-tertiary">{halted.detail}</p>
       </div>
     );
   }
 
   return (
-    <div className="pipe-reveal space-y-3.5 border-t border-border px-4 py-3.5">
+    <div className="pipe-reveal space-y-3.5 border-t border-default px-4 py-3.5">
       <div className="flex items-center gap-2">
-        <ShieldAlert className="h-4 w-4 shrink-0 text-warn-ink" />
-        <strong className="text-[13px]">{gate.title}</strong>
+        <AppIcon name="shieldAlert" size="md" className="shrink-0 text-warning-content" />
+        <strong className="text-sm">{gate.title}</strong>
         <Pill className="ml-auto" tone="warn">
           {gate.approvalId}
         </Pill>
@@ -613,11 +586,11 @@ function GatePanel({
 
       <RunbookList steps={gate.runbook} />
 
-      <p className="text-[11px] leading-relaxed text-muted-foreground">{gate.note}</p>
+      <p className="text-2xs leading-relaxed text-tertiary">{gate.note}</p>
 
       <div className="flex flex-wrap items-center gap-2">
         <Btn variant="ok" onClick={onApprove}>
-          <Check className="h-3.5 w-3.5" />
+          <AppIcon name="check" size="sm" />
           Approve and execute
         </Btn>
         <Btn variant="outline" onClick={onReject}>
@@ -626,7 +599,7 @@ function GatePanel({
         <Link to="/approvals" className="ml-auto">
           <Btn variant="ghost" size="sm">
             Open Approval Queue
-            <ChevronRight className="h-3 w-3" />
+            <AppIcon name="chevronRight" size="xs" />
           </Btn>
         </Link>
       </div>
@@ -638,10 +611,10 @@ function GatePanel({
 
 function HumanPanel({ human }: { human: NonNullable<PipelineStep["human"]> }) {
   return (
-    <div className="pipe-reveal space-y-3.5 border-t border-border bg-human-soft/60 px-4 py-3.5">
+    <div className="pipe-reveal space-y-3.5 border-t border-default bg-human-soft/60 px-4 py-3.5">
       <div className="flex items-center gap-2">
-        <Hand className="h-4 w-4 shrink-0 text-human" />
-        <strong className="text-[13px] text-human">Control transferred to a human owner</strong>
+        <AppIcon name="human" size="md" className="shrink-0 text-human" />
+        <strong className="text-sm text-human">Control transferred to a human owner</strong>
       </div>
 
       <div className="grid gap-2.5 [grid-template-columns:repeat(auto-fit,minmax(200px,1fr))]">
@@ -649,34 +622,34 @@ function HumanPanel({ human }: { human: NonNullable<PipelineStep["human"]> }) {
           ["Owner of record", human.owner],
           ["Paged", human.paged],
         ].map(([l, v]) => (
-          <div key={l} className="rounded-lg border border-border bg-card px-3 py-2.5">
-            <div className="text-[9px] font-extrabold uppercase tracking-[0.1em] text-muted-foreground">
+          <div key={l} className="rounded-lg border border-default bg-raised px-3 py-2.5">
+            <div className="text-4xs font-extrabold uppercase tracking-[0.1em] text-tertiary">
               {l}
             </div>
-            <div className="mt-0.5 text-[12.5px] font-semibold">{v}</div>
+            <div className="mt-0.5 text-xs font-semibold">{v}</div>
           </div>
         ))}
       </div>
 
       <div className="space-y-2">
-        <div className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+        <div className="text-2xs font-semibold uppercase tracking-wide text-tertiary">
           Decisions only a human can make
         </div>
         <div className="space-y-1.5">
           {human.decisions.map((q) => (
-            <div key={q} className="flex items-baseline gap-2 text-[12px]">
-              <span className="num shrink-0 text-[11px] font-bold text-human">?</span>
-              <span className="text-muted-foreground">{q}</span>
+            <div key={q} className="flex items-baseline gap-2 text-xs">
+              <span className="num shrink-0 text-2xs font-bold text-human">?</span>
+              <span className="text-tertiary">{q}</span>
             </div>
           ))}
         </div>
       </div>
 
-      <div className="rounded-lg border border-border bg-card px-3 py-2.5">
-        <div className="text-[9px] font-extrabold uppercase tracking-[0.1em] text-muted-foreground">
+      <div className="rounded-lg border border-default bg-raised px-3 py-2.5">
+        <div className="text-4xs font-extrabold uppercase tracking-[0.1em] text-tertiary">
           What the agents handed over
         </div>
-        <p className="mt-1 text-[12.5px] leading-relaxed">{human.gave}</p>
+        <p className="mt-1 text-xs leading-relaxed">{human.gave}</p>
       </div>
     </div>
   );
@@ -697,17 +670,17 @@ function ResultBanner({
 }) {
   const skin =
     kind === "ok"
-      ? "border-ok/35 bg-ok-soft"
+      ? "border-success/35 bg-success-bg"
       : kind === "human"
         ? "border-human/35 bg-human-soft"
-        : "border-crit/35 bg-crit-soft";
+        : "border-error/35 bg-error-bg";
   const tile =
     kind === "ok"
-      ? "bg-ok/15 text-ok"
+      ? "bg-success/15 text-success"
       : kind === "human"
         ? "bg-human/15 text-human"
-        : "bg-crit/15 text-crit";
-  const Icon = kind === "ok" ? ShieldCheck : kind === "human" ? Hand : X;
+        : "bg-error/15 text-error";
+  const icon: IconName = kind === "ok" ? "compliance" : kind === "human" ? "human" : "close";
 
   return (
     <div
@@ -719,13 +692,11 @@ function ResultBanner({
       <div
         className={cn("grid h-[38px] w-[38px] shrink-0 place-items-center rounded-[10px]", tile)}
       >
-        <Icon className="h-5 w-5" strokeWidth={2} />
+        <AppIcon name={icon} size="xl" />
       </div>
       <div className="min-w-0 flex-1">
-        <div className="text-[13.5px] font-semibold">{title}</div>
-        <p className="mt-0.5 max-w-[86ch] text-[11.5px] leading-relaxed text-muted-foreground">
-          {detail}
-        </p>
+        <div className="text-sm font-semibold">{title}</div>
+        <p className="mt-0.5 max-w-[86ch] text-2xs leading-relaxed text-tertiary">{detail}</p>
       </div>
       <div className="flex shrink-0 flex-wrap gap-2">
         <Link to="/autonomy">

@@ -1,9 +1,28 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Legend,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 import { AppShell } from "@/components/app-shell";
-import { Btn, DataTable, ExportBtn, Filters, Kpi, Panel, Pill, axisProps, tooltipStyle } from "@/components/kit";
+import {
+  Btn,
+  DataTable,
+  ExportBtn,
+  Filters,
+  Kpi,
+  Panel,
+  Pill,
+  axisProps,
+  tooltipStyle,
+} from "@/components/kit";
 import { costOpps, spendByPlatform } from "@/data/db";
 
 export const Route = createFileRoute("/cost")({
@@ -16,7 +35,10 @@ export const Route = createFileRoute("/cost")({
           "Cloud and SaaS spend by platform, idle resource detection and $186K/month of identified savings with one click approval.",
       },
       { property: "og:title", content: "Cost Optimization (FinOps) — Digital Brain" },
-      { property: "og:description", content: "Find, quantify and action cloud waste across AWS, Azure, GCP and SaaS." },
+      {
+        property: "og:description",
+        content: "Find, quantify and action cloud waste across AWS, Azure, GCP and SaaS.",
+      },
     ],
   }),
   component: Cost,
@@ -34,13 +56,34 @@ function Cost() {
       actions={<ExportBtn label="Export savings plan" />}
     >
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <Kpi label="Monthly cloud spend" value="$2.40M" sub="AWS · Azure · GCP · SaaS" tone="info" trend="↑ 1.6% MoM" />
+        <Kpi
+          label="Monthly cloud spend"
+          value="$2.40M"
+          sub="AWS · Azure · GCP · SaaS"
+          tone="info"
+          trend="↑ 1.6% MoM"
+        />
         <Kpi label="Identified savings" value="$186K/mo" sub="across 128 resources" tone="ok" />
-        <Kpi label="Realised savings YTD" value="$1.42M" sub="from 940 actioned items" tone="ok" trend="↑ $71K" />
-        <Kpi label="Still unactioned" value={`$${pending}K/mo`} sub={`${costOpps.length - approved.length} opportunities`} tone="warn" />
+        <Kpi
+          label="Realised savings YTD"
+          value="$1.42M"
+          sub="from 940 actioned items"
+          tone="ok"
+          trend="↑ $71K"
+        />
+        <Kpi
+          label="Still unactioned"
+          value={`$${pending}K/mo`}
+          sub={`${costOpps.length - approved.length} opportunities`}
+          tone="warn"
+        />
       </div>
 
-      <Panel className="mt-4" title="Spend by platform" desc="US$ thousands per month, trailing 12 months">
+      <Panel
+        className="mt-4"
+        title="Spend by platform"
+        desc="US$ thousands per month, trailing 12 months"
+      >
         <div className="h-[260px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={spendByPlatform} margin={{ left: -10, right: 8, top: 6 }}>
@@ -52,31 +95,58 @@ function Cost() {
               <Bar dataKey="aws" name="AWS" stackId="s" fill="var(--color-chart-1)" />
               <Bar dataKey="azure" name="Azure" stackId="s" fill="var(--color-chart-2)" />
               <Bar dataKey="gcp" name="GCP" stackId="s" fill="var(--color-chart-3)" />
-              <Bar dataKey="saas" name="SaaS" stackId="s" fill="var(--color-chart-4)" radius={[3, 3, 0, 0]} />
+              <Bar
+                dataKey="saas"
+                name="SaaS"
+                stackId="s"
+                fill="var(--color-chart-4)"
+                radius={[3, 3, 0, 0]}
+              />
             </BarChart>
           </ResponsiveContainer>
         </div>
       </Panel>
 
-      <Panel className="mt-4" title="Optimization opportunities" desc="Ranked by monthly savings" pad={false}>
+      <Panel
+        className="mt-4"
+        title="Optimization opportunities"
+        desc="Ranked by monthly savings"
+        pad={false}
+      >
         <div className="px-4 pt-3">
           <Filters
             groups={[{ key: "p", label: "Platform", options: ["AWS", "Azure", "GCP", "SaaS"] }]}
             state={f}
             onChange={(k, v) => setF((s) => ({ ...s, [k]: v }))}
-            right={<span className="text-[11px] text-muted-foreground">{rows.length} opportunities</span>}
+            right={<span className="text-2xs text-tertiary">{rows.length} opportunities</span>}
           />
         </div>
         <DataTable
           rows={rows}
           rowKey={(r) => r.r}
           cols={[
-            { key: "r", header: "Resource", cell: (r) => <span className="font-medium">{r.r}</span> },
+            {
+              key: "r",
+              header: "Resource",
+              cell: (r) => <span className="font-medium">{r.r}</span>,
+            },
             { key: "p", header: "Platform", cell: (r) => <Pill>{r.p}</Pill> },
-            { key: "issue", header: "Issue", cell: (r) => <span className="text-muted-foreground">{r.issue}</span> },
-            { key: "cost", header: "Monthly cost", cell: (r) => <span className="num">${r.cost}K</span> },
+            {
+              key: "issue",
+              header: "Issue",
+              cell: (r) => <span className="text-tertiary">{r.issue}</span>,
+            },
+            {
+              key: "cost",
+              header: "Monthly cost",
+              cell: (r) => <span className="num">${r.cost}K</span>,
+            },
             { key: "rec", header: "Recommendation" },
-            { key: "save", header: "Potential saving", cell: (r) => <span className="num font-semibold text-ok">${r.save}K/mo</span> },
+            {
+              key: "save",
+              header: "Potential saving",
+              cell: (r) => <span className="num font-semibold text-success">${r.save}K/mo</span>,
+            },
             {
               key: "act",
               header: "",
@@ -89,7 +159,9 @@ function Cost() {
                     size="sm"
                     onClick={() => {
                       setApproved((s) => [...s, r.r]);
-                      toast.success(`Approved — $${r.save}K/mo saving scheduled`, { description: r.r });
+                      toast.success(`Approved — $${r.save}K/mo saving scheduled`, {
+                        description: r.r,
+                      });
                     }}
                   >
                     Approve

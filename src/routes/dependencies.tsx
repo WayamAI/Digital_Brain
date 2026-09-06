@@ -26,9 +26,9 @@ export const Route = createFileRoute("/dependencies")({
 });
 
 const HEALTH_RING: Record<string, string> = {
-  ok: "border-ok",
-  warn: "border-warn",
-  crit: "border-crit",
+  ok: "border-success",
+  warn: "border-warning",
+  crit: "border-error",
 };
 
 function Node({
@@ -50,15 +50,15 @@ function Node({
     <button
       onClick={onClick}
       className={cn(
-        "w-[168px] rounded-lg border-2 bg-card px-3 py-2 text-left text-[12px] shadow-sm transition-all hover:shadow-md",
-        HEALTH_RING[health] ?? "border-border",
+        "w-[168px] rounded-lg border-2 bg-raised px-3 py-2 text-left text-xs shadow-sm transition-all hover:shadow-md",
+        HEALTH_RING[health] ?? "border-default",
         active && "ring-2 ring-ring ring-offset-2",
         dim && "opacity-35",
-        center && "w-[196px] bg-muted font-semibold",
+        center && "w-[196px] bg-action font-semibold",
       )}
     >
       <span className="block truncate">{id}</span>
-      <span className="mt-0.5 block text-[10px] text-muted-foreground">
+      <span className="mt-0.5 block text-3xs text-tertiary">
         {nodeInfo[id]?.tier} · {nodeInfo[id]?.status}
       </span>
     </button>
@@ -88,7 +88,7 @@ function Dependencies() {
           <select
             value={sel}
             onChange={(e) => setSel(e.target.value)}
-            className="rounded-md border border-border bg-card px-2.5 py-1.5 text-[12px]"
+            className="rounded-md border border-default bg-raised px-2.5 py-1.5 text-xs"
           >
             {Object.keys(nodeInfo).map((n) => (
               <option key={n}>{n}</option>
@@ -101,7 +101,9 @@ function Dependencies() {
                 setSim(null);
               } else {
                 setSim(sel);
-                toast.message("Outage simulated", { description: `Blast radius computed for ${sel}` });
+                toast.message("Outage simulated", {
+                  description: `Blast radius computed for ${sel}`,
+                });
               }
             }}
           >
@@ -117,7 +119,7 @@ function Dependencies() {
         >
           <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-6 overflow-x-auto py-2">
             <div className="space-y-2.5">
-              <div className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+              <div className="text-3xs font-semibold uppercase tracking-wide text-tertiary">
                 Upstream
               </div>
               {depGraph.upstream.map((u) => (
@@ -146,7 +148,7 @@ function Dependencies() {
             </div>
 
             <div className="space-y-2.5">
-              <div className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+              <div className="text-3xs font-semibold uppercase tracking-wide text-tertiary">
                 Downstream
               </div>
               {depGraph.downstream.map((d) => (
@@ -161,15 +163,15 @@ function Dependencies() {
               ))}
             </div>
           </div>
-          <div className="mt-2 flex flex-wrap gap-3 border-t border-border pt-2 text-[11px] text-muted-foreground">
+          <div className="mt-2 flex flex-wrap gap-3 border-t border-default pt-2 text-2xs text-tertiary">
             <span className="inline-flex items-center gap-1">
-              <span className="h-2 w-2 rounded-full bg-ok" /> Healthy
+              <span className="h-2 w-2 rounded-full bg-success" /> Healthy
             </span>
             <span className="inline-flex items-center gap-1">
-              <span className="h-2 w-2 rounded-full bg-warn" /> Degraded
+              <span className="h-2 w-2 rounded-full bg-warning" /> Degraded
             </span>
             <span className="inline-flex items-center gap-1">
-              <span className="h-2 w-2 rounded-full bg-crit" /> Critical
+              <span className="h-2 w-2 rounded-full bg-error" /> Critical
             </span>
             <span className="ml-auto">Click any node to inspect · 214 services indexed</span>
           </div>
@@ -177,35 +179,47 @@ function Dependencies() {
 
         <div className="space-y-3">
           <Panel title="Node detail" right={<Pill>{info.status}</Pill>}>
-            <h3 className="mb-2 text-[13.5px] font-semibold">{sel}</h3>
+            <h3 className="mb-2 text-sm font-semibold">{sel}</h3>
             <KeyVals
               items={[
                 ["Service owner", info.owner],
                 ["Criticality tier", info.tier],
                 ["Business process", info.process],
-                ["Revenue at risk", <span key="r" className="font-semibold text-crit">{info.revenue} of downtime</span>],
+                [
+                  "Revenue at risk",
+                  <span key="r" className="font-semibold text-error">
+                    {info.revenue} of downtime
+                  </span>,
+                ],
                 ["Current status", <Pill key="s">{info.status}</Pill>],
               ]}
             />
           </Panel>
 
-          <Panel title="Blast radius" desc={sim ? `Simulated outage: ${sim}` : "Run a simulation to see impact"}>
+          <Panel
+            title="Blast radius"
+            desc={sim ? `Simulated outage: ${sim}` : "Run a simulation to see impact"}
+          >
             {sim ? (
-              <ul className="space-y-1.5 text-[12.5px]">
+              <ul className="space-y-1.5 text-xs">
                 {blast.map((b) => (
-                  <li key={b} className="rounded-md border border-crit/30 bg-crit-soft px-3 py-2">
+                  <li key={b} className="rounded-md border border-error/30 bg-error-bg px-3 py-2">
                     <div className="font-medium">{b}</div>
-                    <div className="text-[11px] text-muted-foreground">
+                    <div className="text-2xs text-tertiary">
                       {nodeInfo[b]?.process} · {nodeInfo[b]?.revenue}
                     </div>
                   </li>
                 ))}
-                <li className="rounded-md bg-muted px-3 py-2 text-[12px]">
+                <li className="rounded-md bg-action px-3 py-2 text-xs">
                   Estimated aggregate exposure:{" "}
                   <span className="font-semibold">
                     $
                     {blast
-                      .reduce((a, b) => a + parseFloat((nodeInfo[b]?.revenue ?? "0").replace(/[^0-9.]/g, "")), 0)
+                      .reduce(
+                        (a, b) =>
+                          a + parseFloat((nodeInfo[b]?.revenue ?? "0").replace(/[^0-9.]/g, "")),
+                        0,
+                      )
                       .toFixed(0)}
                     K / hour
                   </span>{" "}
@@ -213,9 +227,9 @@ function Dependencies() {
                 </li>
               </ul>
             ) : (
-              <p className="text-[12.5px] text-muted-foreground">
-                Select a node and press “Simulate outage” to highlight everything that fails with it and
-                the business processes affected.
+              <p className="text-xs text-tertiary">
+                Select a node and press “Simulate outage” to highlight everything that fails with it
+                and the business processes affected.
               </p>
             )}
           </Panel>

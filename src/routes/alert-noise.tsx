@@ -1,8 +1,26 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Area, AreaChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  Legend,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 import { AppShell } from "@/components/app-shell";
-import { DataTable, ExportBtn, Filters, Kpi, Panel, Pill, axisProps, tooltipStyle } from "@/components/kit";
+import {
+  DataTable,
+  ExportBtn,
+  Filters,
+  Kpi,
+  Panel,
+  Pill,
+  axisProps,
+  tooltipStyle,
+} from "@/components/kit";
 import { alertVolume, clusters, suppressionRules } from "@/data/db";
 
 export const Route = createFileRoute("/alert-noise")({
@@ -37,9 +55,26 @@ function AlertNoise() {
     >
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <Kpi label="Raw alerts (24h)" value="4,182" sub="all sources" tone="info" />
-        <Kpi label="Suppressed as duplicate / noise" value="3,870" sub="92.5% of raw" tone="ok" trend="↑ 0.8%" />
-        <Kpi label="Surfaced to humans" value="63" sub="63 events, 5 clusters actioned" tone="warn" />
-        <Kpi label="False positive rate (30d)" value="3.1%" sub="target < 5%" tone="ok" trend="↓ 0.4%" />
+        <Kpi
+          label="Suppressed as duplicate / noise"
+          value="3,870"
+          sub="92.5% of raw"
+          tone="ok"
+          trend="↑ 0.8%"
+        />
+        <Kpi
+          label="Surfaced to humans"
+          value="63"
+          sub="63 events, 5 clusters actioned"
+          tone="warn"
+        />
+        <Kpi
+          label="False positive rate (30d)"
+          value="3.1%"
+          sub="target < 5%"
+          tone="ok"
+          trend="↓ 0.4%"
+        />
       </div>
 
       <Panel className="mt-4" title="Alert volume — raw vs. surfaced" desc="Last 7 days">
@@ -86,8 +121,17 @@ function AlertNoise() {
             dense
             cols={[
               { key: "name", header: "Rule" },
-              { key: "pattern", header: "Pattern matched", cell: (r) => <code className="text-[11.5px] text-muted-foreground">{r.pattern}</code> },
-              { key: "suppressed", header: "Suppressed (24h)", align: "right", cell: (r) => r.suppressed.toLocaleString() },
+              {
+                key: "pattern",
+                header: "Pattern matched",
+                cell: (r) => <code className="text-2xs text-tertiary">{r.pattern}</code>,
+              },
+              {
+                key: "suppressed",
+                header: "Suppressed (24h)",
+                align: "right",
+                cell: (r) => r.suppressed.toLocaleString(),
+              },
               { key: "tuned", header: "Last tuned" },
               { key: "status", header: "Status", cell: (r) => <Pill>{r.status}</Pill> },
             ]}
@@ -107,7 +151,9 @@ function AlertNoise() {
                 key: "score",
                 header: "Priority",
                 align: "right",
-                cell: (r) => <Pill tone={r.score > 90 ? "crit" : r.score > 70 ? "warn" : "ok"}>{r.score}</Pill>,
+                cell: (r) => (
+                  <Pill tone={r.score > 90 ? "crit" : r.score > 70 ? "warn" : "ok"}>{r.score}</Pill>
+                ),
               },
             ]}
           />

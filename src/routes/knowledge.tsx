@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { BookOpen, Search } from "lucide-react";
+import { AppIcon } from "@/components/app-icon";
 import { AppShell } from "@/components/app-shell";
 import { Btn, Panel } from "@/components/kit";
 import { knowledgeSources, recentQuestions, suggestedQuestions } from "@/data/db";
@@ -17,7 +17,8 @@ export const Route = createFileRoute("/knowledge")({
       { property: "og:title", content: "Knowledge Assistant — Digital Brain" },
       {
         property: "og:description",
-        content: "Ask operational questions and get cited answers from the PepsiCo IT knowledge base.",
+        content:
+          "Ask operational questions and get cited answers from the PepsiCo IT knowledge base.",
       },
     ],
   }),
@@ -69,7 +70,10 @@ function Knowledge() {
     <AppShell intro="The Knowledge Assistant refuses to answer without a citation. If it cannot ground the answer in a document or incident record, it says so and routes you to an owner.">
       <div className="grid gap-3 xl:grid-cols-[1fr_330px]">
         <div className="space-y-3">
-          <Panel title="Ask the knowledge base" desc="Runbooks · architecture docs · SOPs · incident history">
+          <Panel
+            title="Ask the knowledge base"
+            desc="Runbooks · architecture docs · SOPs · incident history"
+          >
             <form
               className="flex gap-2"
               onSubmit={(e) => {
@@ -78,38 +82,49 @@ function Knowledge() {
               }}
             >
               <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+                <AppIcon
+                  name="search"
+                  size="sm"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-tertiary"
+                />
                 <input
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
-                  className="w-full rounded-md border border-border bg-card py-2 pl-9 pr-3 text-[13px] outline-none focus:ring-2 focus:ring-ring/40"
+                  className="w-full rounded-md border border-default bg-raised py-2 pl-9 pr-3 text-sm outline-none focus:ring-2 focus:ring-ring/40"
                 />
               </div>
               <Btn type="submit">Ask</Btn>
             </form>
           </Panel>
 
-          <Panel title="Answer" desc={loading ? "Retrieving and grounding…" : "Grounded in 5 sources"}>
+          <Panel
+            title="Answer"
+            desc={loading ? "Retrieving and grounding…" : "Grounded in 5 sources"}
+          >
             {loading ? (
               <div className="space-y-2">
                 {[90, 100, 75].map((w) => (
-                  <div key={w} className="h-3 animate-pulse rounded bg-muted" style={{ width: `${w}%` }} />
+                  <div
+                    key={w}
+                    className="h-3 animate-pulse rounded bg-action"
+                    style={{ width: `${w}%` }}
+                  />
                 ))}
               </div>
             ) : (
               <>
-                <p className="text-[13px] leading-relaxed">{answer.a}</p>
+                <p className="text-sm leading-relaxed">{answer.a}</p>
                 <div className="mt-4">
-                  <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                  <div className="mb-1.5 text-2xs font-semibold uppercase tracking-wide text-tertiary">
                     Sources
                   </div>
                   <ul className="grid gap-1.5 md:grid-cols-2">
                     {answer.sources.map((s) => (
                       <li
                         key={s}
-                        className="flex items-center gap-2 rounded-md border border-border px-3 py-1.5 text-[12px] hover:bg-muted"
+                        className="flex items-center gap-2 rounded-md border border-default px-3 py-1.5 text-xs hover:bg-action"
                       >
-                        <BookOpen className="h-3.5 w-3.5 text-accent" />
+                        <AppIcon name="book" size="sm" className="text-info" />
                         {s}
                       </li>
                     ))}
@@ -127,7 +142,7 @@ function Knowledge() {
                 <li key={s}>
                   <button
                     onClick={() => ask(s)}
-                    className="w-full rounded-md border border-border px-3 py-2 text-left text-[12px] hover:border-accent hover:bg-muted"
+                    className="w-full rounded-md border border-default px-3 py-2 text-left text-xs hover:border-info hover:bg-action"
                   >
                     {s}
                   </button>
@@ -137,11 +152,11 @@ function Knowledge() {
           </Panel>
 
           <Panel title="Recently asked (team wide)">
-            <ul className="space-y-1.5 text-[12px]">
+            <ul className="space-y-1.5 text-xs">
               {recentQuestions.map((r) => (
-                <li key={r.q} className="rounded-md bg-muted px-3 py-2">
+                <li key={r.q} className="rounded-md bg-action px-3 py-2">
                   <div>{r.q}</div>
-                  <div className="mt-0.5 text-[11px] text-muted-foreground">
+                  <div className="mt-0.5 text-2xs text-tertiary">
                     {r.who} · {r.when}
                   </div>
                 </li>
@@ -150,12 +165,15 @@ function Knowledge() {
           </Panel>
 
           <Panel title="Source library">
-            <ul className="space-y-1.5 text-[12.5px]">
+            <ul className="space-y-1.5 text-xs">
               {knowledgeSources.map((s) => (
-                <li key={s.name} className="flex items-center gap-2 rounded-md border border-border px-3 py-2">
-                  <BookOpen className="h-3.5 w-3.5 text-accent" />
+                <li
+                  key={s.name}
+                  className="flex items-center gap-2 rounded-md border border-default px-3 py-2"
+                >
+                  <AppIcon name="book" size="sm" className="text-info" />
                   {s.name}
-                  <span className="num ml-auto text-muted-foreground">{s.count.toLocaleString()}</span>
+                  <span className="num ml-auto text-tertiary">{s.count.toLocaleString()}</span>
                 </li>
               ))}
             </ul>

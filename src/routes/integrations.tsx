@@ -28,9 +28,23 @@ function IntegrationsPage() {
   return (
     <AppShell>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <Kpi label="Connected systems" value={String(integrations.length)} sub="enterprise sources" />
-        <Kpi label="Healthy connectors" value={String(integrations.length - degraded.length)} sub="syncing normally" tone="ok" />
-        <Kpi label="Degraded" value={String(degraded.length)} sub="Splunk ingestion lag" tone="warn" />
+        <Kpi
+          label="Connected systems"
+          value={String(integrations.length)}
+          sub="enterprise sources"
+        />
+        <Kpi
+          label="Healthy connectors"
+          value={String(integrations.length - degraded.length)}
+          sub="syncing normally"
+          tone="ok"
+        />
+        <Kpi
+          label="Degraded"
+          value={String(degraded.length)}
+          sub="Splunk ingestion lag"
+          tone="warn"
+        />
         <Kpi label="Daily events ingested" value="3.9M" sub="across all sources" tone="info" />
       </div>
 

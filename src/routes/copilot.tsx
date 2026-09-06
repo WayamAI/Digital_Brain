@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Send, Sparkles } from "lucide-react";
+import { AppIcon } from "@/components/app-icon";
 import { AppShell } from "@/components/app-shell";
 import { Btn, Panel, Pill } from "@/components/kit";
 import { copilotActions } from "@/data/db";
@@ -42,7 +42,7 @@ const CANNED: { q: string; a: string }[] = [
   },
   {
     q: "Update ServiceNow ticket INC-48213 with the rollback status",
-    a: "Done — ServiceNow INC-48213 updated at 14:09 UTC.\n\n• Work note added: \"Automated rollback to sap-om-api v4.19.1 executing; pool utilisation 84% and falling.\"\n• State set to *In Progress*, assignment group *Enterprise Apps — SAP*.\n• Linked to PRB-1042 and CHG-3388.\n\nThe write is logged in the accountability ledger under your name.",
+    a: 'Done — ServiceNow INC-48213 updated at 14:09 UTC.\n\n• Work note added: "Automated rollback to sap-om-api v4.19.1 executing; pool utilisation 84% and falling."\n• State set to *In Progress*, assignment group *Enterprise Apps — SAP*.\n• Linked to PRB-1042 and CHG-3388.\n\nThe write is logged in the accountability ledger under your name.',
   },
 ];
 
@@ -82,7 +82,12 @@ function Copilot() {
   return (
     <AppShell intro="The Copilot drafts, summarises and writes back to ServiceNow — it never sends outbound executive communication without an operator pressing send.">
       <div className="grid gap-3 xl:grid-cols-[1.6fr_1fr]">
-        <Panel title="Conversation" desc="Operations Copilot · Tier 2 autonomy" pad={false} className="min-h-[560px]">
+        <Panel
+          title="Conversation"
+          desc="Operations Copilot · Tier 2 autonomy"
+          pad={false}
+          className="min-h-[560px]"
+        >
           <div className="flex h-[460px] flex-col gap-3 overflow-y-auto px-4 py-4">
             {msgs.map((m, i) => (
               <div
@@ -91,22 +96,22 @@ function Copilot() {
               >
                 {m.role === "agent" && (
                   <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-brand">
-                    <Sparkles className="h-3.5 w-3.5 text-brand-foreground" />
+                    <AppIcon name="ai" size="sm" className="text-brand-foreground" />
                   </div>
                 )}
                 <div
                   className={cn(
-                    "max-w-[78%] whitespace-pre-line rounded-lg px-3.5 py-2.5 text-[12.5px] leading-relaxed",
+                    "max-w-[78%] whitespace-pre-line rounded-lg px-3.5 py-2.5 text-xs leading-relaxed",
                     m.role === "user"
                       ? "bg-brand text-brand-foreground"
-                      : "border border-border bg-muted",
+                      : "border border-default bg-action",
                   )}
                 >
                   {m.text}
                   <div
                     className={cn(
-                      "mt-1.5 text-[10px]",
-                      m.role === "user" ? "text-brand-foreground/70" : "text-muted-foreground",
+                      "mt-1.5 text-3xs",
+                      m.role === "user" ? "text-brand-foreground/70" : "text-tertiary",
                     )}
                   >
                     {m.t}
@@ -114,18 +119,16 @@ function Copilot() {
                 </div>
               </div>
             ))}
-            {thinking && (
-              <div className="text-[12px] text-muted-foreground">Copilot is composing…</div>
-            )}
+            {thinking && <div className="text-xs text-tertiary">Copilot is composing…</div>}
           </div>
 
-          <div className="border-t border-border px-4 py-3">
+          <div className="border-t border-default px-4 py-3">
             <div className="mb-2 flex flex-wrap gap-1.5">
               {CANNED.map((c) => (
                 <button
                   key={c.q}
                   onClick={() => send(c.q)}
-                  className="rounded-full border border-border px-2.5 py-1 text-[11px] text-muted-foreground hover:border-accent hover:text-foreground"
+                  className="rounded-full border border-default px-2.5 py-1 text-2xs text-tertiary hover:border-info hover:text-primary"
                 >
                   {c.q}
                 </button>
@@ -142,10 +145,10 @@ function Copilot() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Ask the Copilot to draft, summarise, look up or update…"
-                className="flex-1 rounded-md border border-border bg-card px-3 py-2 text-[13px] outline-none focus:ring-2 focus:ring-ring/40"
+                className="flex-1 rounded-md border border-default bg-raised px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring/40"
               />
               <Btn type="submit">
-                <Send className="h-3.5 w-3.5" /> Send
+                <AppIcon name="send" size="sm" /> Send
               </Btn>
             </form>
           </div>
@@ -153,31 +156,31 @@ function Copilot() {
 
         <div className="space-y-3">
           <Panel title="Active incident context">
-            <div className="space-y-2 text-[12.5px]">
+            <div className="space-y-2 text-xs">
               <div className="flex items-center gap-2">
                 <Pill tone="crit">INC-48213</Pill>
-                <span className="text-muted-foreground">SAP ERP – Order Mgmt (Frito Lay NA)</span>
+                <span className="text-tertiary">SAP ERP – Order Mgmt (Frito Lay NA)</span>
               </div>
-              <p className="text-muted-foreground">
-                Rollback executing · 94% confidence · owner Agent (Tier 1) · bridge #it-ops-bridge live
-                with 9 participants.
+              <p className="text-tertiary">
+                Rollback executing · 94% confidence · owner Agent (Tier 1) · bridge #it-ops-bridge
+                live with 9 participants.
               </p>
               <div className="flex items-center gap-2 pt-1">
                 <Pill tone="warn">INC-48211</Pill>
-                <span className="text-muted-foreground">Salesforce – Field Sales (LatAm)</span>
+                <span className="text-tertiary">Salesforce – Field Sales (LatAm)</span>
               </div>
             </div>
           </Panel>
 
           <Panel title="Relevant runbooks">
-            <ul className="space-y-1.5 text-[12.5px]">
+            <ul className="space-y-1.5 text-xs">
               {[
                 "SOP-022 — Connection pool saturation (SAP OM)",
                 "RB-118 — Safe deploy rollback, sap-om-api",
                 "RB-091 — OAuth cache bust after cert rotation",
                 "SOP-014 — P1 post incident review template",
               ].map((r) => (
-                <li key={r} className="rounded-md border border-border px-3 py-2 hover:bg-muted">
+                <li key={r} className="rounded-md border border-default px-3 py-2 hover:bg-action">
                   {r}
                 </li>
               ))}
@@ -185,15 +188,15 @@ function Copilot() {
           </Panel>
 
           <Panel title="Related tickets">
-            <ul className="space-y-1.5 text-[12.5px]">
+            <ul className="space-y-1.5 text-xs">
               {[
                 ["CHG-3388", "Deploy sap-om-api v4.19.2 — frozen"],
                 ["PRB-1042", "DB connection pool exhaustion — in progress"],
                 ["INC-48102", "Prior occurrence, 4 days ago — resolved"],
               ].map(([id, d]) => (
-                <li key={id} className="flex gap-2 rounded-md border border-border px-3 py-2">
+                <li key={id} className="flex gap-2 rounded-md border border-default px-3 py-2">
                   <span className="font-medium">{id}</span>
-                  <span className="text-muted-foreground">{d}</span>
+                  <span className="text-tertiary">{d}</span>
                 </li>
               ))}
             </ul>
@@ -201,13 +204,20 @@ function Copilot() {
         </div>
       </div>
 
-      <Panel className="mt-3" title="Recent Copilot actions" desc="Every write back is attributable">
+      <Panel
+        className="mt-3"
+        title="Recent Copilot actions"
+        desc="Every write back is attributable"
+      >
         <ul className="grid gap-1.5 md:grid-cols-2">
           {copilotActions.map((a) => (
-            <li key={a.a} className="flex items-center gap-2 rounded-md border border-border px-3 py-2 text-[12.5px]">
-              <span className="h-1.5 w-1.5 rounded-full bg-ok" />
+            <li
+              key={a.a}
+              className="flex items-center gap-2 rounded-md border border-default px-3 py-2 text-xs"
+            >
+              <span className="h-1.5 w-1.5 rounded-full bg-success" />
               {a.a}
-              <span className="ml-auto text-[11px] text-muted-foreground">
+              <span className="ml-auto text-2xs text-tertiary">
                 {a.by} · {a.t}
               </span>
             </li>

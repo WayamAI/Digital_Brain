@@ -1,5 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, Radio } from "lucide-react";
+import { AppIcon } from "@/components/app-icon";
 import { AppShell } from "@/components/app-shell";
 import { AgentPipeline, TierBanner } from "@/components/agent-pipeline";
 import { Btn, KeyVals, Meter, Panel, Pill } from "@/components/kit";
@@ -60,31 +60,31 @@ function IncidentDetail() {
               <Pill tone="muted">{incident.region}</Pill>
               <Pill>{incident.status}</Pill>
             </div>
-            <h2 className="mt-2 text-[17px] font-semibold tracking-tight">{incident.service}</h2>
-            <p className="mt-1.5 max-w-[78ch] text-[13px] leading-relaxed text-muted-foreground">
+            <h2 className="mt-2 type-display-page">{incident.service}</h2>
+            <p className="mt-1.5 max-w-[78ch] text-sm leading-relaxed text-tertiary">
               {incident.desc}
             </p>
           </div>
           <div className="flex shrink-0 flex-col items-end gap-2">
             <Link to="/incidents">
               <Btn variant="ghost" size="sm">
-                <ArrowLeft className="h-3.5 w-3.5" />
+                <AppIcon name="arrowLeft" size="sm" />
                 Incident queue
               </Btn>
             </Link>
-            <span className="inline-flex items-center gap-1.5 text-[11px] text-muted-foreground">
-              <Radio className="h-3.5 w-3.5" /> detected {incident.detected}
+            <span className="inline-flex items-center gap-1.5 text-2xs text-tertiary">
+              <AppIcon name="pending" size="sm" /> detected {incident.detected}
             </span>
           </div>
         </div>
 
-        <dl className="grid gap-x-4 gap-y-3 border-t border-border pt-4 [grid-template-columns:repeat(auto-fit,minmax(180px,1fr))]">
+        <dl className="grid gap-x-4 gap-y-3 border-t border-default pt-4 [grid-template-columns:repeat(auto-fit,minmax(180px,1fr))]">
           {Object.entries(incident.meta).map(([k, v]) => (
             <div key={k}>
-              <dt className="text-[9px] font-extrabold uppercase tracking-[0.1em] text-muted-foreground">
+              <dt className="text-4xs font-extrabold uppercase tracking-[0.1em] text-tertiary">
                 {k}
               </dt>
-              <dd className="mt-0.5 text-[12.5px] font-medium">{v}</dd>
+              <dd className="mt-0.5 text-xs font-medium">{v}</dd>
             </div>
           ))}
         </dl>
@@ -105,19 +105,19 @@ function IncidentDetail() {
           desc="Captured by the Observe stage before any agent was dispatched"
         >
           {detail ? (
-            <ol className="relative space-y-2.5 border-l border-border pl-4">
+            <ol className="relative space-y-2.5 border-l border-default pl-4">
               {detail.signals.map((s) => (
                 <li key={s.t + s.text} className="relative">
-                  <span className="absolute -left-[21px] top-1.5 h-2 w-2 rounded-full bg-accent" />
-                  <div className="num text-[11px] text-muted-foreground">
+                  <span className="absolute -left-[21px] top-1.5 h-2 w-2 rounded-full bg-info" />
+                  <div className="num text-2xs text-tertiary">
                     {s.t} · {s.kind}
                   </div>
-                  <div className="text-[12.5px]">{s.text}</div>
+                  <div className="text-xs">{s.text}</div>
                 </li>
               ))}
             </ol>
           ) : (
-            <p className="text-[12.5px] leading-relaxed text-muted-foreground">
+            <p className="text-xs leading-relaxed text-tertiary">
               Closed without escalation. The signal bundle is archived against the closure record
               and replayable for 30 days — dispatch the pipeline above to watch how the agents
               worked it.
@@ -145,7 +145,7 @@ function IncidentDetail() {
                 ["Autonomy tier", <Pill key="t">{scenario.tier}</Pill>],
               ]}
             />
-            <p className="mt-3 rounded-md bg-muted px-3 py-2 text-[11.5px] leading-relaxed text-muted-foreground">
+            <p className="mt-3 rounded-md bg-action px-3 py-2 text-2xs leading-relaxed text-tertiary">
               Anything below 60% confidence is escalated to a named human owner automatically,
               whatever tier the action would otherwise sit in.
             </p>
@@ -155,20 +155,18 @@ function IncidentDetail() {
             <Panel title="Executed runbook steps" desc="State at the time this page loaded">
               <ul className="space-y-1.5">
                 {detail.steps.map((s) => (
-                  <li key={s.step} className="flex items-center gap-2 text-[12.5px]">
+                  <li key={s.step} className="flex items-center gap-2 text-xs">
                     <span
                       className={cn(
                         "h-2 w-2 shrink-0 rounded-full",
                         s.state === "done"
-                          ? "bg-ok"
+                          ? "bg-success"
                           : s.state === "running"
-                            ? "bg-warn"
+                            ? "bg-warning"
                             : "bg-border",
                       )}
                     />
-                    <span className={cn(s.state === "pending" && "text-muted-foreground")}>
-                      {s.step}
-                    </span>
+                    <span className={cn(s.state === "pending" && "text-tertiary")}>{s.step}</span>
                   </li>
                 ))}
               </ul>

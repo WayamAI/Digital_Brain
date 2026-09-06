@@ -1,8 +1,25 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { CartesianGrid, Line, LineChart, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import {
+  CartesianGrid,
+  Line,
+  LineChart,
+  ReferenceLine,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 import { AppShell } from "@/components/app-shell";
-import { DataTable, ExportBtn, Meter, Panel, Pill, axisProps, tooltipStyle } from "@/components/kit";
+import {
+  DataTable,
+  ExportBtn,
+  Meter,
+  Panel,
+  Pill,
+  axisProps,
+  tooltipStyle,
+} from "@/components/kit";
 import { BUS, healthTrend, services } from "@/data/db";
 import { cn } from "@/lib/utils";
 
@@ -25,12 +42,18 @@ export const Route = createFileRoute("/service-health")({
   component: ServiceHealth,
 });
 
-const dot = (h: number) => (h >= 90 ? "bg-ok" : h >= 75 ? "bg-warn" : "bg-crit");
+const dot = (h: number) => (h >= 90 ? "bg-success" : h >= 75 ? "bg-warning" : "bg-error");
 
 function ServiceHealth() {
   const [sel, setSel] = useState(services[0]!.name);
   const svc = services.find((s) => s.name === sel)!;
-  const trend = svc.health < 70 ? healthTrend : healthTrend.map((h) => ({ ...h, score: Math.min(99, (h.score ?? 90) + (svc.health - 61)) }));
+  const trend =
+    svc.health < 70
+      ? healthTrend
+      : healthTrend.map((h) => ({
+          ...h,
+          score: Math.min(99, (h.score ?? 90) + (svc.health - 61)),
+        }));
 
   return (
     <AppShell
@@ -42,7 +65,7 @@ function ServiceHealth() {
           <div className="max-h-[520px] overflow-y-auto py-1">
             {BUS.map((bu) => (
               <div key={bu} className="px-2 py-1">
-                <div className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+                <div className="px-2 py-1 text-3xs font-semibold uppercase tracking-wide text-tertiary">
                   {bu}
                 </div>
                 {services
@@ -52,13 +75,13 @@ function ServiceHealth() {
                       key={s.name}
                       onClick={() => setSel(s.name)}
                       className={cn(
-                        "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-[12.5px] hover:bg-muted",
-                        sel === s.name && "bg-info-soft font-medium",
+                        "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-xs hover:bg-action",
+                        sel === s.name && "bg-info-bg font-medium",
                       )}
                     >
                       <span className={cn("h-2 w-2 shrink-0 rounded-full", dot(s.health))} />
                       <span className="truncate">{s.name}</span>
-                      <span className="num ml-auto text-[11px] text-muted-foreground">{s.health}</span>
+                      <span className="num ml-auto text-2xs text-tertiary">{s.health}</span>
                     </button>
                   ))}
               </div>
@@ -70,7 +93,11 @@ function ServiceHealth() {
           <Panel
             title={svc.name}
             desc={`${svc.bu} · ${svc.tier} · owner ${svc.owner}`}
-            right={<Pill tone={svc.health >= 90 ? "ok" : svc.health >= 75 ? "warn" : "crit"}>Health {svc.health}</Pill>}
+            right={
+              <Pill tone={svc.health >= 90 ? "ok" : svc.health >= 75 ? "warn" : "crit"}>
+                Health {svc.health}
+              </Pill>
+            }
           >
             <div className="h-[230px]">
               <ResponsiveContainer width="100%" height="100%">
@@ -80,7 +107,13 @@ function ServiceHealth() {
                   <YAxis domain={[50, 100]} {...axisProps} />
                   <Tooltip {...tooltipStyle} formatter={(v) => [v, "Health score"]} />
                   <ReferenceLine y={80} stroke="var(--color-warn)" strokeDasharray="4 4" />
-                  <Line type="monotone" dataKey="score" stroke="var(--color-chart-1)" strokeWidth={2} dot={false} />
+                  <Line
+                    type="monotone"
+                    dataKey="score"
+                    stroke="var(--color-chart-1)"
+                    strokeWidth={2}
+                    dot={false}
+                  />
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -88,13 +121,13 @@ function ServiceHealth() {
 
           <div className="grid gap-3 md:grid-cols-2">
             <Panel title="Degradation prediction" right={<Pill tone="warn">62% probability</Pill>}>
-              <p className="text-[13px] leading-relaxed">
-                62% probability of a latency breach in the next 4 hours based on the current trend, the
-                open connection-pool defect and the NA afternoon order surge.
+              <p className="text-sm leading-relaxed">
+                62% probability of a latency breach in the next 4 hours based on the current trend,
+                the open connection-pool defect and the NA afternoon order surge.
               </p>
-              <div className="mt-3 rounded-md bg-warn-soft px-3 py-2 text-[12.5px] text-warn-ink">
-                Recommended preventive action: complete the v4.19.1 rollback verification, then pre-warm
-                two additional application nodes before 16:00 UTC.
+              <div className="mt-3 rounded-md bg-warning-bg px-3 py-2 text-xs text-warning-content">
+                Recommended preventive action: complete the v4.19.1 rollback verification, then
+                pre-warm two additional application nodes before 16:00 UTC.
               </div>
               <div className="mt-3">
                 <Meter value={62} tone="warn" />
@@ -102,7 +135,7 @@ function ServiceHealth() {
             </Panel>
 
             <Panel title="Executive health summary" desc="Auto generated 14:12 UTC">
-              <p className="text-[13px] leading-relaxed">
+              <p className="text-sm leading-relaxed">
                 {svc.name} is currently at {svc.health}/100, {svc.trend} over seven days.{" "}
                 {svc.health < 75
                   ? "The service is the primary driver of today's open critical incident; order capture continues but at degraded latency, with an estimated $310K/hour of order to cash throughput exposed if it degrades further. Permanent fix PRB-1042 is in progress with engineering."
@@ -113,7 +146,12 @@ function ServiceHealth() {
         </div>
       </div>
 
-      <Panel className="mt-3" title="Service health summary" desc="All monitored services" pad={false}>
+      <Panel
+        className="mt-3"
+        title="Service health summary"
+        desc="All monitored services"
+        pad={false}
+      >
         <DataTable
           rows={services}
           onRow={(r) => setSel(r.name)}
@@ -125,7 +163,12 @@ function ServiceHealth() {
             {
               key: "health",
               header: "Current health",
-              cell: (r) => <Meter value={r.health} tone={r.health >= 90 ? "ok" : r.health >= 75 ? "warn" : "crit"} />,
+              cell: (r) => (
+                <Meter
+                  value={r.health}
+                  tone={r.health >= 90 ? "ok" : r.health >= 75 ? "warn" : "crit"}
+                />
+              ),
             },
             { key: "trend", header: "7-day trend" },
             { key: "risk", header: "Predicted risk (24h)", cell: (r) => <Pill>{r.risk}</Pill> },

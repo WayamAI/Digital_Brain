@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Zap } from "lucide-react";
+import { AppIcon } from "@/components/app-icon";
 import { AppShell } from "@/components/app-shell";
 import { Btn, DataTable, ExportBtn, Filters, Meter, Panel, Pill } from "@/components/kit";
 import { incidents, type Incident } from "@/data/db";
@@ -52,14 +52,14 @@ function IncidentQueue() {
     >
       <div className="mb-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {[
-          ["Open", "5", "text-foreground"],
-          ["Auto resolving", "3", "text-ok"],
-          ["Escalated", "2", "text-warn-ink"],
-          ["Avg confidence on active diagnoses", "87%", "text-foreground"],
+          ["Open", "5", "text-primary"],
+          ["Auto resolving", "3", "text-success"],
+          ["Escalated", "2", "text-warning-content"],
+          ["Avg confidence on active diagnoses", "87%", "text-primary"],
         ].map(([l, v, t]) => (
           <div key={l} className="card-surface px-3.5 py-3">
-            <div className="text-[11px] uppercase tracking-wide text-muted-foreground">{l}</div>
-            <div className={cn("num mt-1 text-[22px] font-bold", t)}>{v}</div>
+            <div className="text-2xs uppercase tracking-wide text-tertiary">{l}</div>
+            <div className={cn("mt-1 type-display-metric", t)}>{v}</div>
           </div>
         ))}
       </div>
@@ -87,9 +87,7 @@ function IncidentQueue() {
             ]}
             state={f}
             onChange={(k, v) => setF((s) => ({ ...s, [k]: v }))}
-            right={
-              <span className="text-[11px] text-muted-foreground">{rows.length} incidents</span>
-            }
+            right={<span className="text-2xs text-tertiary">{rows.length} incidents</span>}
           />
         </div>
         <DataTable<Incident>
@@ -108,7 +106,7 @@ function IncidentQueue() {
               cell: (r) => (
                 <div>
                   <div>{r.service}</div>
-                  <div className="text-[11px] text-muted-foreground">
+                  <div className="text-2xs text-tertiary">
                     {r.bu} · {r.region}
                   </div>
                 </div>
@@ -119,7 +117,7 @@ function IncidentQueue() {
             {
               key: "cause",
               header: "Probable root cause (agent)",
-              cell: (r) => <span className="text-muted-foreground">{r.cause}</span>,
+              cell: (r) => <span className="text-tertiary">{r.cause}</span>,
             },
             {
               key: "confidence",
@@ -152,7 +150,7 @@ function IncidentQueue() {
                   onClick={(e) => e.stopPropagation()}
                 >
                   <Btn size="sm" variant={r.status === "Resolved" ? "outline" : "default"}>
-                    <Zap className="h-3 w-3" />
+                    <AppIcon name="dispatch" size="xs" />
                     {r.status === "Resolved" ? "Replay" : "Dispatch"}
                   </Btn>
                 </Link>
@@ -191,11 +189,11 @@ function IncidentQueue() {
               eg: "INC-48207",
             },
           ].map((c) => (
-            <div key={c.tier} className="rounded-lg border border-border p-3">
+            <div key={c.tier} className="rounded-lg border border-default p-3">
               <Pill tone={c.tone}>{c.tier}</Pill>
-              <div className="mt-2 text-[12.5px] font-semibold">{c.head}</div>
-              <p className="mt-1 text-[11.5px] leading-relaxed text-muted-foreground">{c.body}</p>
-              <div className="num mt-2 text-[11px] text-muted-foreground">{c.eg}</div>
+              <div className="mt-2 text-xs font-semibold">{c.head}</div>
+              <p className="mt-1 text-2xs leading-relaxed text-tertiary">{c.body}</p>
+              <div className="num mt-2 text-2xs text-tertiary">{c.eg}</div>
             </div>
           ))}
         </div>

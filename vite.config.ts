@@ -11,7 +11,8 @@ import tsConfigPaths from "vite-tsconfig-paths";
 // the `vercel` preset there (writes `.vercel/output`, Vercel's Build Output
 // API — zero extra config needed) and `node-server` everywhere else.
 // Override either default with NITRO_PRESET.
-const NITRO_PRESET = process.env["NITRO_PRESET"] ?? (process.env["VERCEL"] ? "vercel" : "node-server");
+const NITRO_PRESET =
+  process.env["NITRO_PRESET"] ?? (process.env["VERCEL"] ? "vercel" : "node-server");
 
 export default defineConfig(async ({ command }) => {
   const plugins = [

@@ -49,7 +49,13 @@ function VendorsPage() {
     <AppShell>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <Kpi label="Vendors tracked" value={String(vendors.length)} sub="under active contract" />
-        <Kpi label="Avg SLA compliance" value={`${avg}%`} sub="last 30 days" tone="ok" trend="+0.4" />
+        <Kpi
+          label="Avg SLA compliance"
+          value={`${avg}%`}
+          sub="last 30 days"
+          tone="ok"
+          trend="+0.4"
+        />
         <Kpi
           label="Vendors below target"
           value={String(breaching.length)}
@@ -73,10 +79,34 @@ function VendorsPage() {
               <YAxis domain={[86, 100]} unit="%" {...axisProps} />
               <Tooltip {...tooltipStyle} />
               <Legend wrapperStyle={{ fontSize: 11 }} />
-              <Line type="monotone" dataKey="Accenture" stroke="var(--color-chart-1)" dot={false} strokeWidth={2} />
-              <Line type="monotone" dataKey="Infosys" stroke="var(--color-chart-2)" dot={false} strokeWidth={2} />
-              <Line type="monotone" dataKey="AWS" stroke="var(--color-chart-3)" dot={false} strokeWidth={2} />
-              <Line type="monotone" dataKey="SAP" stroke="var(--color-chart-4)" dot={false} strokeWidth={2} />
+              <Line
+                type="monotone"
+                dataKey="Accenture"
+                stroke="var(--color-chart-1)"
+                dot={false}
+                strokeWidth={2}
+              />
+              <Line
+                type="monotone"
+                dataKey="Infosys"
+                stroke="var(--color-chart-2)"
+                dot={false}
+                strokeWidth={2}
+              />
+              <Line
+                type="monotone"
+                dataKey="AWS"
+                stroke="var(--color-chart-3)"
+                dot={false}
+                strokeWidth={2}
+              />
+              <Line
+                type="monotone"
+                dataKey="SAP"
+                stroke="var(--color-chart-4)"
+                dot={false}
+                strokeWidth={2}
+              />
             </LineChart>
           </ResponsiveContainer>
         </div>
@@ -100,7 +130,7 @@ function VendorsPage() {
               header: "SLA compliance",
               value: (r) => r.sla,
               cell: (r) => (
-                <span className={r.sla < 95 ? "text-crit" : "text-ok"}>{r.sla}%</span>
+                <span className={r.sla < 95 ? "text-error" : "text-success"}>{r.sla}%</span>
               ),
             },
             { key: "resp", header: "Avg response", value: (r) => r.resp },
@@ -109,7 +139,12 @@ function VendorsPage() {
               key: "score",
               header: "Score",
               value: (r) => r.score,
-              cell: (r) => <Meter value={r.score} tone={r.score >= 90 ? "ok" : r.score >= 80 ? "warn" : "crit"} />,
+              cell: (r) => (
+                <Meter
+                  value={r.score}
+                  tone={r.score >= 90 ? "ok" : r.score >= 80 ? "warn" : "crit"}
+                />
+              ),
             },
             {
               key: "trend",

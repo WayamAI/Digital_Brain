@@ -29,9 +29,19 @@ function UsersPage() {
     <AppShell>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <Kpi label="Active users" value={String(users.length)} sub="4 business units" />
-        <Kpi label="Approvers" value={String(approvers.length)} sub="can action Tier 2" tone="info" />
+        <Kpi
+          label="Approvers"
+          value={String(approvers.length)}
+          sub="can action Tier 2"
+          tone="info"
+        />
         <Kpi label="Active now" value="2" sub="APAC shift" tone="ok" />
-        <Kpi label="Roles configured" value="4" sub="Operator, Engineer, Manager, CIO" tone="muted" />
+        <Kpi
+          label="Roles configured"
+          value="4"
+          sub="Operator, Engineer, Manager, CIO"
+          tone="muted"
+        />
       </div>
 
       <Panel
@@ -54,13 +64,20 @@ function UsersPage() {
             },
             { key: "bu", header: "Business unit", value: (r) => r.bu },
             { key: "region", header: "Region", value: (r) => r.region },
-            { key: "approvals", header: "Approvals (90d)", value: (r) => r.approvals, align: "right" },
+            {
+              key: "approvals",
+              header: "Approvals (90d)",
+              value: (r) => r.approvals,
+              align: "right",
+            },
             {
               key: "last",
               header: "Last active",
               value: (r) => r.last,
               cell: (r) => (
-                <span className={r.last === "Active now" ? "text-ok" : "text-muted-foreground"}>{r.last}</span>
+                <span className={r.last === "Active now" ? "text-success" : "text-tertiary"}>
+                  {r.last}
+                </span>
               ),
             },
           ]}

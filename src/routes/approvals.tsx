@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Zap } from "lucide-react";
+import { AppIcon } from "@/components/app-icon";
 import { AppShell } from "@/components/app-shell";
 import { Btn, DataTable, Drawer, KeyVals, Panel, Pill } from "@/components/kit";
 import { approvals } from "@/data/db";
@@ -50,21 +50,29 @@ function ApprovalQueue() {
       intro="Tier 2 items: the agent has a fix and the confidence to run it, but the blast radius requires a named human to say yes. Control Tower KPIs update as you decide."
       actions={<Pill tone={rows.length ? "warn" : "ok"}>{rows.length} awaiting · SLA 15 min</Pill>}
     >
-      <Panel title="Pending approvals" desc="Click a row for blast radius and rollback plan" pad={false}>
+      <Panel
+        title="Pending approvals"
+        desc="Click a row for blast radius and rollback plan"
+        pad={false}
+      >
         {rows.length ? (
           <DataTable<Row>
             rows={rows}
             rowKey={(r) => r.id}
             onRow={setSel}
             cols={[
-              { key: "item", header: "Item", cell: (r) => <span className="font-medium">{r.item}</span> },
+              {
+                key: "item",
+                header: "Item",
+                cell: (r) => <span className="font-medium">{r.item}</span>,
+              },
               { key: "agent", header: "Agent" },
               { key: "action", header: "Proposed action" },
               { key: "risk", header: "Risk", cell: (r) => <Pill>{r.risk}</Pill> },
               {
                 key: "impact",
                 header: "Business impact if wrong",
-                cell: (r) => <span className="text-muted-foreground">{r.impact}</span>,
+                cell: (r) => <span className="text-tertiary">{r.impact}</span>,
               },
               { key: "waiting", header: "Waiting since" },
               {
@@ -90,15 +98,19 @@ function ApprovalQueue() {
             ]}
           />
         ) : (
-          <div className="px-4 py-6 text-[13px] text-muted-foreground">
+          <div className="px-4 py-6 text-sm text-tertiary">
             Queue clear — all Tier 2 proposals decided. New proposals appear here within seconds of
             agent diagnosis.
           </div>
         )}
       </Panel>
 
-      <Panel className="mt-4" title="Decision log — this session" desc="Every decision is written to the accountability ledger">
-        <ul className="space-y-1.5 text-[12.5px]">
+      <Panel
+        className="mt-4"
+        title="Decision log — this session"
+        desc="Every decision is written to the accountability ledger"
+      >
+        <ul className="space-y-1.5 text-xs">
           {(log.length
             ? log
             : [
@@ -107,14 +119,19 @@ function ApprovalQueue() {
                 "Rejected APR-765 — Restart HANA secondary node (deferred to CAB) · 07:55",
               ]
           ).map((l) => (
-            <li key={l} className="rounded-md border border-border px-3 py-2">
+            <li key={l} className="rounded-md border border-default px-3 py-2">
               {l}
             </li>
           ))}
         </ul>
       </Panel>
 
-      <Drawer open={!!sel} onClose={() => setSel(null)} title={sel?.action ?? ""} subtitle={sel?.item}>
+      <Drawer
+        open={!!sel}
+        onClose={() => setSel(null)}
+        title={sel?.action ?? ""}
+        subtitle={sel?.item}
+      >
         {sel && (
           <>
             <KeyVals
@@ -127,23 +144,25 @@ function ApprovalQueue() {
                 ["Impact if wrong", sel.impact],
               ]}
             />
-            <div className="rounded-md bg-ok-soft px-3 py-2 text-[12.5px] text-ok">{sel.history}</div>
-            <div className="rounded-md border border-border px-3 py-2.5">
-              <div className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+            <div className="rounded-md bg-success-bg px-3 py-2 text-xs text-success">
+              {sel.history}
+            </div>
+            <div className="rounded-md border border-default px-3 py-2.5">
+              <div className="text-2xs font-semibold uppercase tracking-wide text-tertiary">
                 Where this came from
               </div>
-              <p className="mt-1 text-[12px] leading-relaxed text-muted-foreground">
-                {sel.agent} raised this while working {sel.incident}. Open the incident to see the full
-                agent pipeline that produced it, and approve at the gate in context.
+              <p className="mt-1 text-xs leading-relaxed text-tertiary">
+                {sel.agent} raised this while working {sel.incident}. Open the incident to see the
+                full agent pipeline that produced it, and approve at the gate in context.
               </p>
               <Link to="/incidents/$id" params={{ id: sel.incident }}>
                 <Btn variant="outline" size="sm" className="mt-2">
-                  <Zap className="h-3 w-3" />
+                  <AppIcon name="dispatch" size="xs" />
                   Open {sel.incident} pipeline
                 </Btn>
               </Link>
             </div>
-            <div className="flex gap-2 border-t border-border pt-3">
+            <div className="flex gap-2 border-t border-default pt-3">
               <Btn variant="ok" onClick={() => decide(sel, true)}>
                 Approve &amp; execute
               </Btn>

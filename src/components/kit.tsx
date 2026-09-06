@@ -1,26 +1,60 @@
 import { useMemo, useState, type ReactNode } from "react";
-import { ArrowDown, ArrowUp, ChevronsUpDown } from "lucide-react";
+import { AppIcon } from "@/components/app-icon";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
+/**
+ * Tone is the product's status vocabulary. Every tone resolves to a
+ * feedback.* token group — nothing in this file reaches for a raw colour.
+ *
+ *   ok    -> feedback.success      warn  -> feedback.warning
+ *   crit  -> feedback.error        info  -> feedback.info
+ *   muted -> feedback.neutral      human -> Tier 3, human owned (indigo)
+ */
 export type Tone = "ok" | "warn" | "crit" | "info" | "muted" | "human";
 
 const TONE_CLASS: Record<Tone, string> = {
-  ok: "bg-ok-soft text-ok border-ok/25",
-  warn: "bg-warn-soft text-warn-ink border-warn/30",
-  crit: "bg-crit-soft text-crit border-crit/25",
-  info: "bg-info-soft text-info border-info/25",
-  muted: "bg-muted text-muted-foreground border-border",
+  ok: "bg-success-bg text-success-content border-success-stroke",
+  warn: "bg-warning-bg text-warning-content border-warning-stroke",
+  crit: "bg-error-bg text-error-content border-error-stroke",
+  info: "bg-info-bg text-info-content border-info-stroke",
+  muted: "bg-neutral-bg text-neutral-content border-neutral-stroke",
   human: "bg-human-soft text-human border-human/25",
+};
+
+const TONE_TEXT: Record<Tone, string> = {
+  ok: "text-success",
+  warn: "text-warning",
+  crit: "text-error",
+  info: "text-info",
+  muted: "text-quaternary",
+  human: "text-human",
+};
+
+const TONE_FILL: Record<Tone, string> = {
+  ok: "bg-success",
+  warn: "bg-warning",
+  crit: "bg-error",
+  info: "bg-info",
+  muted: "bg-neutral",
+  human: "bg-human",
 };
 
 export function toneFor(v: string): Tone {
   const s = v.toLowerCase();
   // Tier 3 is human owned; it gets its own colour everywhere it appears.
   if (s.includes("tier 3")) return "human";
-  if (/(critical|breach|disconnected|escalated|open exception|reschedule|degraded|high|failed)/.test(s))
-    return s.includes("high") || s.includes("degraded") || s.includes("reschedule") ? "warn" : "crit";
-  if (/(awaiting|pending|warning|medium|remediating|in progress|paused|elevated|add rollback)/.test(s))
+  if (
+    /(critical|breach|disconnected|escalated|open exception|reschedule|degraded|high|failed)/.test(
+      s,
+    )
+  )
+    return s.includes("high") || s.includes("degraded") || s.includes("reschedule")
+      ? "warn"
+      : "crit";
+  if (
+    /(awaiting|pending|warning|medium|remediating|in progress|paused|elevated|add rollback)/.test(s)
+  )
     return "warn";
   if (/(healthy|resolved|active|success|ok|low|proceed|fix shipped|no action|nominal)/.test(s))
     return "ok";
@@ -28,29 +62,38 @@ export function toneFor(v: string): Tone {
   return "muted";
 }
 
-export function Pill({
+/**
+ * The canonical status chip. Colour comes entirely from feedback.* tokens, so
+ * a "critical" badge reads identically in a table, on a card and in a header.
+ */
+export function StatusBadge({
   children,
   tone,
+  dot = true,
   className,
 }: {
   children: ReactNode;
   tone?: Tone | undefined;
+  dot?: boolean | undefined;
   className?: string | undefined;
 }) {
   const t = tone ?? (typeof children === "string" ? toneFor(children) : "muted");
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 whitespace-nowrap rounded-full border px-2 py-0.5 text-[11px] font-medium",
+        "inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border px-2 py-0.5 type-caption font-medium",
         TONE_CLASS[t],
         className,
       )}
     >
-      <span className={cn("h-1.5 w-1.5 rounded-full", `bg-current`)} />
+      {dot && <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-current" />}
       {children}
     </span>
   );
 }
+
+/** Historic name for StatusBadge. Kept so the 25 screens don't churn. */
+export const Pill = StatusBadge;
 
 export function Panel({
   title,
@@ -70,10 +113,10 @@ export function Panel({
   return (
     <section className={cn("card-surface flex flex-col", className)}>
       {(title || right) && (
-        <header className="flex items-start gap-3 border-b border-border px-4 py-3">
+        <header className="flex items-start gap-3 border-b border-muted px-4 py-2.5">
           <div className="min-w-0">
-            {title && <h2 className="text-[13px] font-semibold tracking-tight">{title}</h2>}
-            {desc && <p className="mt-0.5 text-[11px] text-muted-foreground">{desc}</p>}
+            {title && <h2 className="type-heading-md text-primary">{title}</h2>}
+            {desc && <p className="mt-0.5 type-caption text-tertiary">{desc}</p>}
           </div>
           {right && <div className="ml-auto flex shrink-0 items-center gap-2">{right}</div>}
         </header>
@@ -83,15 +126,11 @@ export function Panel({
   );
 }
 
-const TREND_CLASS: Record<Tone, string> = {
-  ok: "text-ok",
-  warn: "text-warn-ink",
-  crit: "text-crit",
-  info: "text-accent",
-  muted: "text-muted-foreground",
-  human: "text-human",
-};
-
+/**
+ * A KPI tile. The value is the only Michroma on the card; everything else is
+ * Geist. The bar under the label is segmented rather than solid — it reads as
+ * a gauge, which is the point, and it survives being small.
+ */
 export function Kpi({
   label,
   value,
@@ -105,25 +144,37 @@ export function Kpi({
   tone?: Tone | undefined;
   trend?: string | undefined;
 }) {
-  const bar: Record<Tone, string> = {
-    ok: "bg-ok",
-    warn: "bg-warn",
-    crit: "bg-crit",
-    info: "bg-accent",
-    muted: "bg-border",
-    human: "bg-human",
-  };
+  const lit = { ok: 5, info: 4, warn: 3, human: 3, crit: 2, muted: 1 }[tone];
+  const rising = trend?.trim().startsWith("+");
   return (
-    <div className="card-surface relative overflow-hidden p-3.5">
-      <span className={cn("absolute inset-x-0 top-0 h-[3px]", bar[tone])} />
-      <div className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
-        {label}
+    <div className="card-surface transition-ui relative p-3.5 hover:border-active">
+      <div className="flex items-center gap-2">
+        <span className="type-label-sm text-quaternary">{label}</span>
       </div>
-      <div className="num mt-1.5 text-[26px] font-bold leading-none">{value}</div>
-      <div className="mt-1.5 flex items-baseline gap-2">
-        {sub && <span className="text-[11px] text-muted-foreground">{sub}</span>}
+      {/* The value stays neutral; the segmented bar and the trend carry the
+          state colour. A wall of coloured hero numbers reads as noise. */}
+      <div className="mt-2 type-display-metric text-primary">{value}</div>
+      {/* Segmented status bar — five steps, lit according to tone. */}
+      <div className="mt-2.5 flex gap-1" aria-hidden>
+        {[0, 1, 2, 3, 4].map((i) => (
+          <span
+            key={i}
+            className={cn("h-[3px] flex-1 rounded-full", i < lit ? TONE_FILL[tone] : "bg-action")}
+          />
+        ))}
+      </div>
+      <div className="mt-2 flex items-baseline gap-2">
+        {sub && <span className="type-caption text-tertiary">{sub}</span>}
         {trend && (
-          <span className={cn("ml-auto text-[11px] font-medium", TREND_CLASS[tone])}>{trend}</span>
+          <span
+            className={cn(
+              "num ml-auto inline-flex items-center gap-1 type-caption font-medium",
+              TONE_TEXT[tone],
+            )}
+          >
+            <AppIcon name={rising ? "arrowUp" : "arrowDown"} size="xs" />
+            {trend}
+          </span>
         )}
       </div>
     </div>
@@ -172,35 +223,34 @@ export function DataTable<T extends object>({
 
   return (
     <div className="overflow-x-auto">
-      <table className="w-full border-collapse text-[13px]">
-        <thead>
-          <tr className="border-b border-border bg-muted/60">
+      <table className="w-full border-collapse type-body-md">
+        {/* Sticky-header ready: the thead sits at the top of any scroll parent. */}
+        <thead className="sticky top-0 z-10">
+          <tr className="border-b border-default bg-raised-2">
             {cols.map((c) => (
               <th
                 key={c.key}
                 style={c.width ? { width: c.width } : undefined}
                 className={cn(
-                  "select-none px-3 py-2 text-left text-[11px] font-semibold uppercase tracking-wide text-muted-foreground",
+                  "select-none px-3 py-2 text-left type-label-sm text-quaternary",
                   c.align === "right" && "text-right",
                 )}
               >
                 <button
-                  className="inline-flex items-center gap-1 hover:text-foreground"
+                  className="transition-ui inline-flex items-center gap-1 hover:text-secondary"
                   onClick={() =>
                     setSort((s) =>
-                      s?.key === c.key ? { key: c.key, dir: s.dir === 1 ? -1 : 1 } : { key: c.key, dir: 1 },
+                      s?.key === c.key
+                        ? { key: c.key, dir: s.dir === 1 ? -1 : 1 }
+                        : { key: c.key, dir: 1 },
                     )
                   }
                 >
                   {c.header}
                   {sort?.key === c.key ? (
-                    sort.dir === 1 ? (
-                      <ArrowUp className="h-3 w-3" />
-                    ) : (
-                      <ArrowDown className="h-3 w-3" />
-                    )
+                    <AppIcon name={sort.dir === 1 ? "arrowUp" : "arrowDown"} size="xs" />
                   ) : (
-                    <ChevronsUpDown className="h-3 w-3 opacity-40" />
+                    <AppIcon name="sort" size="xs" className="text-icon-quaternary opacity-50" />
                   )}
                 </button>
               </th>
@@ -215,19 +265,19 @@ export function DataTable<T extends object>({
                 key={k}
                 onClick={() => onRow?.(r)}
                 className={cn(
-                  "border-b border-border/70 last:border-0",
+                  "transition-ui border-b border-muted last:border-0",
                   onRow && "cursor-pointer",
-                  "hover:bg-muted/70",
-                  activeKey && activeKey === k && "bg-info-soft hover:bg-info-soft",
+                  "hover:bg-raised-2",
+                  activeKey && activeKey === k && "bg-info-bg hover:bg-info-bg",
                 )}
               >
                 {cols.map((c) => (
                   <td
                     key={c.key}
                     className={cn(
-                      "px-3 align-top",
-                      dense ? "py-1.5" : "py-2.5",
-                      c.align === "right" && "text-right num",
+                      "px-3 align-top text-secondary",
+                      dense ? "py-1.5" : "py-2",
+                      c.align === "right" && "num text-right",
                     )}
                   >
                     {c.cell ? c.cell(r) : String((r as Record<string, unknown>)[c.key] ?? "")}
@@ -252,7 +302,7 @@ export function Btn({
   disabled = false,
 }: {
   children: ReactNode;
-  variant?: "default" | "outline" | "ghost" | "ok" | "danger" | "accent" | undefined;
+  variant?: "default" | "outline" | "ghost" | "ok" | "danger" | "accent" | "primary" | undefined;
   onClick?: (() => void) | undefined;
   className?: string | undefined;
   size?: "sm" | "md" | undefined;
@@ -260,12 +310,14 @@ export function Btn({
   disabled?: boolean | undefined;
 }) {
   const styles: Record<string, string> = {
+    // The one inverse CTA per screen: near-white plate, near-black content.
+    primary: "bg-action-primary text-action-primary-content hover:bg-action-primary-hover",
     default: "bg-brand text-brand-foreground hover:bg-brand/90",
-    accent: "bg-accent text-accent-foreground hover:bg-accent/90",
-    outline: "border border-border bg-card text-foreground hover:bg-muted",
-    ghost: "text-muted-foreground hover:bg-muted hover:text-foreground",
-    ok: "bg-ok text-primary-foreground hover:bg-ok/90",
-    danger: "bg-crit text-primary-foreground hover:bg-crit/90",
+    accent: "bg-info text-on-color hover:bg-info/90",
+    outline: "border border-default bg-action text-secondary hover:bg-raised hover:text-primary",
+    ghost: "bg-action-tertiary text-tertiary hover:bg-action-tertiary-hover hover:text-primary",
+    ok: "bg-success text-on-color hover:bg-success/90",
+    danger: "bg-error text-on-color hover:bg-error/90",
   };
   return (
     <button
@@ -273,8 +325,9 @@ export function Btn({
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        "inline-flex items-center justify-center gap-1.5 rounded-md font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50",
-        size === "sm" ? "px-2.5 py-1 text-[11px]" : "px-3 py-1.5 text-[12px]",
+        "transition-ui inline-flex items-center justify-center gap-1.5 rounded-lg font-medium outline-none",
+        "focus-visible:ring-2 focus-visible:ring-ring/40 disabled:cursor-not-allowed disabled:opacity-45",
+        size === "sm" ? "px-2.5 py-1 type-caption" : "px-3 py-1.5 type-label-md",
         styles[variant],
         className,
       )}
@@ -284,6 +337,45 @@ export function Btn({
   );
 }
 
+/**
+ * A filter pill. Dark plate, hairline stroke, compact — and never a generic
+ * blue when selected; selected rides action-surface.primary like every other
+ * "this one is chosen" state in the app.
+ */
+export function FilterChip({
+  children,
+  selected,
+  onClick,
+  className,
+}: {
+  children: ReactNode;
+  selected?: boolean | undefined;
+  onClick?: (() => void) | undefined;
+  className?: string | undefined;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={selected}
+      className={cn(
+        "transition-ui inline-flex h-7 items-center whitespace-nowrap rounded-full border px-2.5 type-caption font-medium outline-none",
+        "focus-visible:ring-2 focus-visible:ring-ring/40",
+        selected
+          ? "border-transparent bg-action-primary text-action-primary-content"
+          : "border-default bg-action text-tertiary hover:bg-raised hover:text-primary",
+        className,
+      )}
+    >
+      {children}
+    </button>
+  );
+}
+
+/**
+ * Filter bar. Small option sets render as chips — faster to scan and to hit
+ * than a select; anything longer stays a select so the bar cannot run away.
+ */
 export function Filters({
   groups,
   state,
@@ -295,22 +387,36 @@ export function Filters({
   onChange: (key: string, value: string) => void;
   right?: ReactNode;
 }) {
+  const CHIP_LIMIT = 5;
   return (
-    <div className="mb-3 flex flex-wrap items-center gap-2">
-      {groups.map((g) => (
-        <label key={g.key} className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-          {g.label}
-          <select
-            value={state[g.key] ?? "All"}
-            onChange={(e) => onChange(g.key, e.target.value)}
-            className="rounded-md border border-border bg-card px-2 py-1 text-[12px] text-foreground outline-none focus:ring-2 focus:ring-ring/40"
-          >
-            {["All", ...g.options].map((o) => (
-              <option key={o}>{o}</option>
-            ))}
-          </select>
-        </label>
-      ))}
+    <div className="mb-3 flex flex-wrap items-center gap-x-4 gap-y-2">
+      {groups.map((g) => {
+        const current = state[g.key] ?? "All";
+        const options = ["All", ...g.options];
+        return (
+          <div key={g.key} className="flex flex-wrap items-center gap-1.5">
+            <span className="type-label-sm text-quaternary">{g.label}</span>
+            {options.length <= CHIP_LIMIT ? (
+              options.map((o) => (
+                <FilterChip key={o} selected={current === o} onClick={() => onChange(g.key, o)}>
+                  {o}
+                </FilterChip>
+              ))
+            ) : (
+              <select
+                aria-label={g.label}
+                value={current}
+                onChange={(e) => onChange(g.key, e.target.value)}
+                className="transition-ui h-7 rounded-full border border-default bg-action px-2.5 type-caption text-secondary outline-none hover:bg-raised focus-visible:ring-2 focus-visible:ring-ring/40"
+              >
+                {options.map((o) => (
+                  <option key={o}>{o}</option>
+                ))}
+              </select>
+            )}
+          </div>
+        );
+      })}
       {right && <div className="ml-auto flex items-center gap-2">{right}</div>}
     </div>
   );
@@ -321,8 +427,11 @@ export function ExportBtn({ label = "Export CSV" }: { label?: string }) {
     <Btn
       variant="outline"
       size="sm"
-      onClick={() => toast.success(`${label} complete`, { description: "File ready in your downloads." })}
+      onClick={() =>
+        toast.success(`${label} complete`, { description: "File ready in your downloads." })
+      }
     >
+      <AppIcon name="export" size="sm" />
       {label}
     </Btn>
   );
@@ -343,24 +452,24 @@ export function useRunAction(ms = 2200) {
 }
 
 export function Meter({ value, tone = "info" }: { value: number; tone?: Tone }) {
-  const bar: Record<Tone, string> = {
-    ok: "bg-ok",
-    warn: "bg-warn",
-    crit: "bg-crit",
-    info: "bg-accent",
-    muted: "bg-border",
-    human: "bg-human",
-  };
   return (
     <div className="flex items-center gap-2">
-      <div className="h-1.5 w-20 overflow-hidden rounded-full bg-muted">
-        <div className={cn("h-full rounded-full", bar[tone])} style={{ width: `${Math.min(100, value)}%` }} />
+      <div className="h-1.5 w-20 overflow-hidden rounded-full bg-action">
+        <div
+          className={cn("h-full rounded-full", TONE_FILL[tone])}
+          style={{ width: `${Math.min(100, value)}%` }}
+        />
       </div>
-      <span className="num text-[12px] text-muted-foreground">{value}%</span>
+      <span className="num type-caption text-tertiary">{value}%</span>
     </div>
   );
 }
 
+/**
+ * The record detail panel. On desktop it is a fixed 340px column pinned to the
+ * shell's right edge — it reads as part of the chrome, not as a modal. Below
+ * lg it becomes a full-width overlay drawer.
+ */
 export function Drawer({
   open,
   onClose,
@@ -377,18 +486,20 @@ export function Drawer({
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-50 flex justify-end">
-      <div className="absolute inset-0 bg-foreground/25" onClick={onClose} />
-      <div className="relative flex h-full w-full max-w-xl flex-col overflow-y-auto border-l border-border bg-card shadow-xl">
-        <div className="sticky top-0 flex items-start gap-3 border-b border-border bg-card px-5 py-3.5">
-          <div>
-            <h3 className="text-[14px] font-semibold">{title}</h3>
-            {subtitle && <p className="text-[11px] text-muted-foreground">{subtitle}</p>}
+      <div className="absolute inset-0 bg-page/70 backdrop-blur-[2px]" onClick={onClose} />
+      <div className="relative flex h-full w-full max-w-md flex-col overflow-y-auto border-l border-default bg-container shadow-raised lg:max-w-[340px]">
+        <div className="sticky top-0 flex items-start gap-3 border-b border-muted bg-container px-4 py-3">
+          <div className="min-w-0">
+            <h3 className="type-heading-lg text-primary">{title}</h3>
+            {subtitle && <p className="type-caption text-tertiary">{subtitle}</p>}
           </div>
-          <Btn variant="ghost" size="sm" className="ml-auto" onClick={onClose}>
-            Close
-          </Btn>
+          <div className="ml-auto">
+            <Btn variant="ghost" size="sm" onClick={onClose}>
+              Close
+            </Btn>
+          </div>
         </div>
-        <div className="space-y-4 px-5 py-4 text-[13px]">{children}</div>
+        <div className="space-y-4 px-4 py-4 type-body-md text-secondary">{children}</div>
       </div>
     </div>
   );
@@ -396,11 +507,11 @@ export function Drawer({
 
 export function KeyVals({ items }: { items: [string, ReactNode][] }) {
   return (
-    <dl className="grid grid-cols-[150px_1fr] gap-x-3 gap-y-2 text-[12px]">
+    <dl className="grid grid-cols-[150px_1fr] gap-x-3 gap-y-2 type-body-sm">
       {items.map(([k, v]) => (
         <div key={k} className="contents">
-          <dt className="text-muted-foreground">{k}</dt>
-          <dd className="text-foreground">{v}</dd>
+          <dt className="text-tertiary">{k}</dt>
+          <dd className="text-primary">{v}</dd>
         </div>
       ))}
     </dl>
@@ -416,7 +527,7 @@ export const CHART_COLORS = [
 ];
 
 export const axisProps = {
-  stroke: "var(--color-muted-foreground)",
+  stroke: "var(--text-quaternary)",
   fontSize: 11,
   tickLine: false,
   axisLine: false,
@@ -424,10 +535,11 @@ export const axisProps = {
 
 export const tooltipStyle = {
   contentStyle: {
-    background: "var(--color-card)",
-    border: "1px solid var(--color-border)",
-    borderRadius: 8,
+    background: "var(--surface-raised-x2)",
+    border: "1px solid var(--stroke-default)",
+    borderRadius: 12,
     fontSize: 12,
+    color: "var(--text-primary)",
   },
-  labelStyle: { color: "var(--color-muted-foreground)", fontSize: 11 },
+  labelStyle: { color: "var(--text-tertiary)", fontSize: 11 },
 } as const;

@@ -1,8 +1,29 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Area, AreaChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  Legend,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 import { AppShell } from "@/components/app-shell";
-import { DataTable, ExportBtn, Filters, Kpi, Meter, Panel, Pill, axisProps, tooltipStyle } from "@/components/kit";
+import {
+  DataTable,
+  ExportBtn,
+  Filters,
+  Kpi,
+  Meter,
+  Panel,
+  Pill,
+  axisProps,
+  tooltipStyle,
+} from "@/components/kit";
 import { capacityRecs, capacityTrend } from "@/data/db";
 
 export const Route = createFileRoute("/capacity")({
@@ -37,10 +58,26 @@ function Capacity() {
       actions={<ExportBtn label="Export capacity plan" />}
     >
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <Kpi label="Platforms tracked" value="5" sub="SAP · Snowflake · Salesforce · AWS · Azure" tone="info" />
+        <Kpi
+          label="Platforms tracked"
+          value="5"
+          sub="SAP · Snowflake · Salesforce · AWS · Azure"
+          tone="info"
+        />
         <Kpi label="Resources near threshold" value="3" sub="≥ 75% utilisation" tone="warn" />
-        <Kpi label="Earliest forecast breach" value="4 weeks" sub="SAP HANA memory — Order Mgmt" tone="crit" />
-        <Kpi label="Cloud spend run rate" value="$2.40M" sub="per month, all platforms" tone="info" trend="↑ 1.6%" />
+        <Kpi
+          label="Earliest forecast breach"
+          value="4 weeks"
+          sub="SAP HANA memory — Order Mgmt"
+          tone="crit"
+        />
+        <Kpi
+          label="Cloud spend run rate"
+          value="$2.40M"
+          sub="per month, all platforms"
+          tone="info"
+          trend="↑ 1.6%"
+        />
       </div>
 
       <div className="mt-4 grid gap-3 xl:grid-cols-2">
@@ -51,11 +88,35 @@ function Capacity() {
                 <CartesianGrid stroke="var(--color-border)" vertical={false} />
                 <XAxis dataKey="w" {...axisProps} />
                 <YAxis domain={[40, 100]} unit="%" {...axisProps} />
-                <Tooltip {...tooltipStyle} formatter={(v: number | string) => [`${Number(v).toFixed(1)}%`, ""]} />
+                <Tooltip
+                  {...tooltipStyle}
+                  formatter={(v: number | string) => [`${Number(v).toFixed(1)}%`, ""]}
+                />
                 <Legend wrapperStyle={{ fontSize: 11 }} />
-                <Line type="monotone" dataKey="cpu" name="CPU" stroke="var(--color-chart-1)" strokeWidth={2} dot={false} />
-                <Line type="monotone" dataKey="mem" name="Memory" stroke="var(--color-chart-2)" strokeWidth={2} dot={false} />
-                <Line type="monotone" dataKey="storage" name="Storage" stroke="var(--color-chart-4)" strokeWidth={2} dot={false} />
+                <Line
+                  type="monotone"
+                  dataKey="cpu"
+                  name="CPU"
+                  stroke="var(--color-chart-1)"
+                  strokeWidth={2}
+                  dot={false}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="mem"
+                  name="Memory"
+                  stroke="var(--color-chart-2)"
+                  strokeWidth={2}
+                  dot={false}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="storage"
+                  name="Storage"
+                  stroke="var(--color-chart-4)"
+                  strokeWidth={2}
+                  dot={false}
+                />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -68,8 +129,17 @@ function Capacity() {
                 <CartesianGrid stroke="var(--color-border)" vertical={false} />
                 <XAxis dataKey="w" {...axisProps} />
                 <YAxis domain={[1.8, 2.6]} {...axisProps} />
-                <Tooltip {...tooltipStyle} formatter={(v: number | string) => [`$${Number(v).toFixed(2)}M`, "Spend"]} />
-                <Area type="monotone" dataKey="spend" stroke="var(--color-chart-1)" fill="var(--color-info-soft)" strokeWidth={2} />
+                <Tooltip
+                  {...tooltipStyle}
+                  formatter={(v: number | string) => [`$${Number(v).toFixed(2)}M`, "Spend"]}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="spend"
+                  stroke="var(--color-chart-1)"
+                  fill="var(--color-info-soft)"
+                  strokeWidth={2}
+                />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -79,29 +149,50 @@ function Capacity() {
       <Panel className="mt-4" title="Capacity recommendations" pad={false}>
         <div className="px-4 pt-3">
           <Filters
-            groups={[{ key: "platform", label: "Platform", options: ["AWS", "Azure", "Snowflake", "SAP", "Salesforce"] }]}
+            groups={[
+              {
+                key: "platform",
+                label: "Platform",
+                options: ["AWS", "Azure", "Snowflake", "SAP", "Salesforce"],
+              },
+            ]}
             state={f}
             onChange={(k, v) => setF((s) => ({ ...s, [k]: v }))}
-            right={<span className="text-[11px] text-muted-foreground">{rows.length} resources</span>}
+            right={<span className="text-2xs text-tertiary">{rows.length} resources</span>}
           />
         </div>
         <DataTable
           rows={rows}
           rowKey={(r) => r.r}
           cols={[
-            { key: "r", header: "Resource", cell: (r) => <span className="font-medium">{r.r}</span> },
+            {
+              key: "r",
+              header: "Resource",
+              cell: (r) => <span className="font-medium">{r.r}</span>,
+            },
             {
               key: "util",
               header: "Current utilisation",
-              cell: (r) => <Meter value={r.util} tone={r.util >= 80 ? "crit" : r.util >= 70 ? "warn" : "ok"} />,
+              cell: (r) => (
+                <Meter value={r.util} tone={r.util >= 80 ? "crit" : r.util >= 70 ? "warn" : "ok"} />
+              ),
             },
             { key: "growth", header: "Growth trend (90d)" },
             {
               key: "breach",
               header: "Forecast breach",
-              cell: (r) => (r.breach === "—" ? <span className="text-muted-foreground">—</span> : <Pill tone={r.breach.startsWith("4") ? "crit" : "warn"}>{r.breach}</Pill>),
+              cell: (r) =>
+                r.breach === "—" ? (
+                  <span className="text-tertiary">—</span>
+                ) : (
+                  <Pill tone={r.breach.startsWith("4") ? "crit" : "warn"}>{r.breach}</Pill>
+                ),
             },
-            { key: "rec", header: "Recommendation", cell: (r) => <span className="text-muted-foreground">{r.rec}</span> },
+            {
+              key: "rec",
+              header: "Recommendation",
+              cell: (r) => <span className="text-tertiary">{r.rec}</span>,
+            },
           ]}
         />
       </Panel>

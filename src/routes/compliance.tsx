@@ -1,5 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 import { AppShell } from "@/components/app-shell";
 import {
   DataTable,
@@ -95,7 +103,11 @@ function CompliancePage() {
               header: "Status",
               value: (r) => r.status,
               cell: (r) => (
-                <Pill tone={r.status === "Resolved" ? "ok" : r.status === "Remediating" ? "info" : "warn"}>
+                <Pill
+                  tone={
+                    r.status === "Resolved" ? "ok" : r.status === "Remediating" ? "info" : "warn"
+                  }
+                >
                   {r.status}
                 </Pill>
               ),

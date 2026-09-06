@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Lock, ShieldCheck } from "lucide-react";
+import { AppIcon } from "@/components/app-icon";
 import { AppShell } from "@/components/app-shell";
 import { DataTable, ExportBtn, Kpi, Meter, Panel, Pill } from "@/components/kit";
 import { alwaysTier3, autonomyPolicies, ledger } from "@/data/db";
@@ -16,7 +16,8 @@ export const Route = createFileRoute("/autonomy")({
       { property: "og:title", content: "Autonomy Model & Guardrails — Digital Brain" },
       {
         property: "og:description",
-        content: "Every autonomous action is attributable to a named human owner or a pre approved policy.",
+        content:
+          "Every autonomous action is attributable to a named human owner or a pre approved policy.",
       },
     ],
   }),
@@ -27,10 +28,10 @@ function AutonomyPage() {
   return (
     <AppShell>
       <div className="card-surface mb-4 flex flex-wrap items-center gap-3 px-4 py-3">
-        <ShieldCheck className="h-5 w-5 text-ok" />
+        <AppIcon name="compliance" size="xl" className="text-success" />
         <div>
-          <div className="text-[13px] font-semibold">Accountability transferred to agents: 0%</div>
-          <p className="text-[11.5px] text-muted-foreground">
+          <div className="text-sm font-semibold">Accountability transferred to agents: 0%</div>
+          <p className="text-2xs text-tertiary">
             Agents execute; humans remain accountable. Nothing runs without an owner of record.
           </p>
         </div>
@@ -41,9 +42,19 @@ function AutonomyPage() {
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <Kpi label="Tier 1 — agent only" value="68%" sub="of resolved volume" tone="ok" />
-        <Kpi label="Tier 2 — agent + approval" value="27%" sub="median approval 4 min" tone="warn" />
+        <Kpi
+          label="Tier 2 — agent + approval"
+          value="27%"
+          sub="median approval 4 min"
+          tone="warn"
+        />
         <Kpi label="Tier 3 — human led" value="5%" sub="~25% of team hours" tone="human" />
-        <Kpi label="Guardrail blocks (30d)" value="19" sub="actions stopped pre execution" tone="info" />
+        <Kpi
+          label="Guardrail blocks (30d)"
+          value="19"
+          sub="actions stopped pre execution"
+          tone="info"
+        />
       </div>
 
       <Panel
@@ -62,14 +73,18 @@ function AutonomyPage() {
               header: "Tier",
               value: (r) => r.tier,
               cell: (r) => (
-                <Pill tone={r.tier === "Tier 1" ? "ok" : r.tier === "Tier 2" ? "warn" : "human"}>{r.tier}</Pill>
+                <Pill tone={r.tier === "Tier 1" ? "ok" : r.tier === "Tier 2" ? "warn" : "human"}>
+                  {r.tier}
+                </Pill>
               ),
             },
             {
               key: "threshold",
               header: "Confidence threshold",
               value: (r) => r.threshold,
-              cell: (r) => <Meter value={r.threshold} tone={r.threshold === 100 ? "crit" : "info"} />,
+              cell: (r) => (
+                <Meter value={r.threshold} tone={r.threshold === 100 ? "crit" : "info"} />
+              ),
             },
             { key: "blast", header: "Blast radius limit", value: (r) => r.blast },
           ]}
@@ -80,8 +95,11 @@ function AutonomyPage() {
         <Panel title="Always Tier 3" desc="Never delegated, regardless of confidence">
           <ul className="space-y-2">
             {alwaysTier3.map((t) => (
-              <li key={t} className="flex items-start gap-2 rounded-md border border-border px-2.5 py-2 text-[12.5px]">
-                <Lock className="mt-0.5 h-3.5 w-3.5 shrink-0 text-crit" />
+              <li
+                key={t}
+                className="flex items-start gap-2 rounded-md border border-default px-2.5 py-2 text-xs"
+              >
+                <AppIcon name="lock" size="sm" className="mt-0.5 shrink-0 text-error" />
                 {t}
               </li>
             ))}

@@ -1,5 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Bar, BarChart, CartesianGrid, Line, ResponsiveContainer, Tooltip, XAxis, YAxis, ComposedChart } from "recharts";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Line,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+  ComposedChart,
+} from "recharts";
 import { AppShell } from "@/components/app-shell";
 import { Kpi, Panel, Pill, axisProps, tooltipStyle } from "@/components/kit";
 import { agentPerf, agents } from "@/data/db";
@@ -51,8 +61,22 @@ function AgentFleet() {
               <YAxis yAxisId="l" {...axisProps} />
               <YAxis yAxisId="r" orientation="right" domain={[85, 100]} unit="%" {...axisProps} />
               <Tooltip {...tooltipStyle} cursor={{ fill: "var(--color-muted)" }} />
-              <Bar yAxisId="l" dataKey="actions" name="Actions" fill="var(--color-chart-2)" radius={[3, 3, 0, 0]} />
-              <Line yAxisId="r" type="monotone" dataKey="success" name="Success %" stroke="var(--color-ok)" strokeWidth={2} dot={false} />
+              <Bar
+                yAxisId="l"
+                dataKey="actions"
+                name="Actions"
+                fill="var(--color-chart-2)"
+                radius={[3, 3, 0, 0]}
+              />
+              <Line
+                yAxisId="r"
+                type="monotone"
+                dataKey="success"
+                name="Success %"
+                stroke="var(--color-ok)"
+                strokeWidth={2}
+                dot={false}
+              />
             </ComposedChart>
           </ResponsiveContainer>
         </div>
@@ -60,7 +84,11 @@ function AgentFleet() {
 
       <div className="mt-4 grid gap-3 lg:grid-cols-2 xl:grid-cols-3">
         {STAGES.map((stage) => (
-          <Panel key={stage} title={stage} desc={`${agents.filter((a) => a.stage === stage).length} agents`}>
+          <Panel
+            key={stage}
+            title={stage}
+            desc={`${agents.filter((a) => a.stage === stage).length} agents`}
+          >
             <ul className="space-y-2">
               {agents
                 .filter((a) => a.stage === stage)
@@ -69,22 +97,22 @@ function AgentFleet() {
                     <Link
                       to="/agents/$slug"
                       params={{ slug: a.slug }}
-                      className="block rounded-md border border-border p-2.5 hover:bg-muted"
+                      className="block rounded-md border border-default p-2.5 hover:bg-action"
                     >
                       <div className="flex items-center gap-2">
                         <span
                           className={cn(
                             "h-1.5 w-1.5 shrink-0 rounded-full",
-                            a.status === "Healthy" ? "bg-ok" : "bg-warn",
+                            a.status === "Healthy" ? "bg-success" : "bg-warning",
                           )}
                         />
-                        <span className="truncate text-[12.5px] font-medium">{a.name}</span>
+                        <span className="truncate text-xs font-medium">{a.name}</span>
                         <Pill className="ml-auto shrink-0">{a.tier}</Pill>
                       </div>
-                      <p className="mt-1 line-clamp-2 text-[11.5px] leading-snug text-muted-foreground">
+                      <p className="mt-1 line-clamp-2 text-2xs leading-snug text-tertiary">
                         {a.what}
                       </p>
-                      <div className="mt-1.5 flex items-center gap-3 text-[11px] text-muted-foreground">
+                      <div className="mt-1.5 flex items-center gap-3 text-2xs text-tertiary">
                         <span className="num">{a.actions.toLocaleString()} actions</span>
                         <span>learned {a.learned}</span>
                       </div>

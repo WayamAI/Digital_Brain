@@ -16,6 +16,10 @@
     "start": "node .output/server/index.mjs"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^7.3.1",
+    "@fortawesome/free-regular-svg-icons": "^7.3.1",
+    "@fortawesome/free-solid-svg-icons": "^7.3.1",
+    "@fortawesome/react-fontawesome": "^3.5.0",
     "@hookform/resolvers": "^5.2.2",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-alert-dialog": "^1.1.15",
@@ -54,7 +58,6 @@
     "date-fns": "^4.1.0",
     "embla-carousel-react": "^8.6.0",
     "input-otp": "^1.4.2",
-    "lucide-react": "^0.575.0",
     "react": "^19.2.0",
     "react-day-picker": "^9.14.0",
     "react-dom": "^19.2.0",
@@ -88,5 +91,5 @@
     "typescript-eslint": "^8.56.1",
     "vite": "^8.2.0"
   },
-  "description": "Digital Brain is an agentic IT operations console \u2014 a demo of AI agents that watch a company's IT systems, catch problems, figure out what's wrong, and fix them automatically where safe, asking a human to approve anything risky. It covers the whole workflow: cutting noisy alerts down to real incidents, diagnosing root causes, weighing risk before acting, executing or proposing fixes, and reporting results to leadership. Built as a realistic demo with synthetic data across twenty five screens, branded for Wayam AI with a simple email and password demo login."
+  "description": "Digital Brain is an agentic IT operations console — a demo of AI agents that watch a company's IT systems, catch problems, figure out what's wrong, and fix them automatically where safe, asking a human to approve anything risky. It covers the whole workflow: cutting noisy alerts down to real incidents, diagnosing root causes, weighing risk before acting, executing or proposing fixes, and reporting results to leadership. Built as a realistic demo with synthetic data across twenty five screens, branded for Wayam AI with a simple email and password demo login."
 }

@@ -13,7 +13,10 @@ export const Route = createFileRoute("/agents/$slug")({
   head: ({ loaderData }) => {
     if (!loaderData) {
       return {
-        meta: [{ title: "Agent not found — Digital Brain" }, { name: "robots", content: "noindex" }],
+        meta: [
+          { title: "Agent not found — Digital Brain" },
+          { name: "robots", content: "noindex" },
+        ],
       };
     }
     const { agent } = loaderData;
@@ -41,23 +44,37 @@ function AgentDetail() {
             ← Agent fleet
           </Btn>
         </Link>
-        <h1 className="text-[15px] font-semibold tracking-tight">{agent.name}</h1>
+        <h1 className="type-display-page">{agent.name}</h1>
         <Pill tone={agent.status === "Healthy" ? "ok" : "warn"}>{agent.status}</Pill>
         <Pill tone="info">{agent.stage}</Pill>
         <Pill>{agent.tier}</Pill>
-        <span className="ml-auto text-[11px] text-muted-foreground">Last learned {agent.learned}</span>
+        <span className="ml-auto text-2xs text-tertiary">Last learned {agent.learned}</span>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <Kpi label="Actions (24h)" value={agent.actions.toLocaleString()} sub="executed or proposed" />
-        <Kpi label="Autonomy tier" value={agent.tier} sub={agent.tier === "Tier 1" ? "agent only" : "approval required"} tone="info" />
+        <Kpi
+          label="Actions (24h)"
+          value={agent.actions.toLocaleString()}
+          sub="executed or proposed"
+        />
+        <Kpi
+          label="Autonomy tier"
+          value={agent.tier}
+          sub={agent.tier === "Tier 1" ? "agent only" : "approval required"}
+          tone="info"
+        />
         <Kpi label="Success rate" value="97%" sub="7-week rolling" tone="ok" />
-        <Kpi label="Guardrails active" value={String(agent.guardrails.length)} sub="hard constraints" tone="warn" />
+        <Kpi
+          label="Guardrails active"
+          value={String(agent.guardrails.length)}
+          sub="hard constraints"
+          tone="warn"
+        />
       </div>
 
       <div className="mt-4 grid gap-3 xl:grid-cols-[1.3fr_1fr]">
         <Panel title="What this agent does" desc="Scope, inputs and outputs">
-          <p className="text-[13px] leading-relaxed">{agent.what}</p>
+          <p className="text-sm leading-relaxed">{agent.what}</p>
           <div className="mt-4">
             <KeyVals
               items={[
@@ -70,12 +87,12 @@ function AgentDetail() {
             />
           </div>
           <div className="mt-4">
-            <div className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+            <div className="mb-2 text-2xs font-semibold uppercase tracking-wide text-tertiary">
               Guardrails
             </div>
             <ul className="space-y-1.5">
               {agent.guardrails.map((g) => (
-                <li key={g} className="rounded-md border border-border px-2.5 py-1.5 text-[12px]">
+                <li key={g} className="rounded-md border border-default px-2.5 py-1.5 text-xs">
                   {g}
                 </li>
               ))}
@@ -102,20 +119,20 @@ function AgentDetail() {
             {recent.length ? (
               <ul className="space-y-2">
                 {recent.map((l) => (
-                  <li key={l.t} className="rounded-md border border-border p-2.5">
-                    <div className="flex items-center gap-2 text-[12px]">
-                      <span className="num text-muted-foreground">{l.t}</span>
+                  <li key={l.t} className="rounded-md border border-default p-2.5">
+                    <div className="flex items-center gap-2 text-xs">
+                      <span className="num text-tertiary">{l.t}</span>
                       <Pill className="ml-auto">{l.tier}</Pill>
                     </div>
-                    <div className="mt-1 text-[12.5px]">{l.action}</div>
-                    <div className="mt-0.5 text-[11px] text-muted-foreground">
+                    <div className="mt-1 text-xs">{l.action}</div>
+                    <div className="mt-0.5 text-2xs text-tertiary">
                       {l.owner} · {l.outcome}
                     </div>
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="text-[12px] text-muted-foreground">
+              <p className="text-xs text-tertiary">
                 No ledger entries in the last 24 hours for this agent.
               </p>
             )}
