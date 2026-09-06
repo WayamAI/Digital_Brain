@@ -176,12 +176,12 @@ export function AppShell({
               <img
                 src="/wayam-logo-light.svg"
                 alt="Wayam AI"
-                className="h-[52px] w-auto max-w-[204px] object-contain dark:hidden"
+                className="h-[68px] w-auto max-w-[196px] object-contain dark:hidden"
               />
               <img
                 src="/wayam-logo-dark.svg"
                 alt="Wayam AI"
-                className="hidden h-[52px] w-auto max-w-[204px] object-contain dark:block"
+                className="hidden h-[68px] w-auto max-w-[196px] object-contain dark:block"
               />
             </>
           )}

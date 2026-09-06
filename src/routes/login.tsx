@@ -65,7 +65,7 @@ function Login() {
           <img
             src="/wayam-logo-dark.svg"
             alt="Wayam AI"
-            className="h-32 w-auto object-contain xl:h-40"
+            className="h-16 w-auto object-contain xl:h-20"
           />
           <div>
             <div className="text-sm font-extrabold uppercase tracking-[0.16em] text-ink-foreground">
