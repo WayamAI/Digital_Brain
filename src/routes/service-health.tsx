@@ -75,7 +75,7 @@ function ServiceHealth() {
                       key={s.name}
                       onClick={() => setSel(s.name)}
                       className={cn(
-                        "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-xs hover:bg-action",
+                        "flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left text-xs hover:bg-action",
                         sel === s.name && "bg-info-bg font-medium",
                       )}
                     >
@@ -125,7 +125,7 @@ function ServiceHealth() {
                 62% probability of a latency breach in the next 4 hours based on the current trend,
                 the open connection-pool defect and the NA afternoon order surge.
               </p>
-              <div className="mt-3 rounded-md bg-warning-bg px-3 py-2 text-xs text-warning-content">
+              <div className="mt-3 rounded-lg bg-warning-bg px-3 py-2 text-xs text-warning-content">
                 Recommended preventive action: complete the v4.19.1 rollback verification, then
                 pre-warm two additional application nodes before 16:00 UTC.
               </div>

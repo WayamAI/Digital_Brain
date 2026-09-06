@@ -112,7 +112,7 @@ function Metrics({ items }: { items: NonNullable<PipelineStep["metrics"]> }) {
   return (
     <div className="grid gap-2 [grid-template-columns:repeat(auto-fit,minmax(112px,1fr))]">
       {items.map((m) => (
-        <div key={m.l} className="rounded-md border border-default bg-action/50 px-2.5 py-2">
+        <div key={m.l} className="rounded-lg border border-default bg-action/50 px-2.5 py-2">
           <div className="text-4xs font-extrabold uppercase tracking-[0.09em] text-tertiary">
             {m.l}
           </div>
@@ -153,7 +153,7 @@ function RunbookList({ steps }: { steps: RunbookStep[] }) {
           <div
             key={r.step}
             className={cn(
-              "flex items-baseline gap-2.5 rounded-md border px-3 py-2 text-xs",
+              "flex items-baseline gap-2.5 rounded-lg border px-3 py-2 text-xs",
               held ? "border-warning/45 bg-warning-bg" : "border-default bg-action/50",
             )}
           >

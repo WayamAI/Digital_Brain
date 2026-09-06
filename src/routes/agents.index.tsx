@@ -97,7 +97,7 @@ function AgentFleet() {
                     <Link
                       to="/agents/$slug"
                       params={{ slug: a.slug }}
-                      className="block rounded-md border border-default p-2.5 hover:bg-action"
+                      className="block rounded-lg border border-default p-2.5 hover:bg-action"
                     >
                       <div className="flex items-center gap-2">
                         <span

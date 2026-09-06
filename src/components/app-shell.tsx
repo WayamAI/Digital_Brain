@@ -61,7 +61,7 @@ export function useSync() {
  *   active    action-surface.primary (the light plate) + icon.on-color
  *
  * Collapsed, this is the icon rail the design system calls for: a 36px
- * strongly rounded button, no label, aria-label carrying the name. Expanded,
+ * strongly rounded-lg button, no label, aria-label carrying the name. Expanded,
  * it keeps its label because 21 destinations across 6 named groups cannot be
  * navigated by glyph alone.
  */

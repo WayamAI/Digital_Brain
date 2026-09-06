@@ -90,7 +90,7 @@ function Knowledge() {
                 <input
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
-                  className="w-full rounded-md border border-default bg-raised py-2 pl-9 pr-3 text-sm outline-none focus:ring-2 focus:ring-ring/40"
+                  className="w-full rounded-lg border border-default bg-raised py-2 pl-9 pr-3 text-sm outline-none focus:ring-2 focus:ring-ring/40"
                 />
               </div>
               <Btn type="submit">Ask</Btn>
@@ -106,7 +106,7 @@ function Knowledge() {
                 {[90, 100, 75].map((w) => (
                   <div
                     key={w}
-                    className="h-3 animate-pulse rounded bg-action"
+                    className="h-3 animate-pulse rounded-lg bg-action"
                     style={{ width: `${w}%` }}
                   />
                 ))}
@@ -122,7 +122,7 @@ function Knowledge() {
                     {answer.sources.map((s) => (
                       <li
                         key={s}
-                        className="flex items-center gap-2 rounded-md border border-default px-3 py-1.5 text-xs hover:bg-action"
+                        className="flex items-center gap-2 rounded-lg border border-default px-3 py-1.5 text-xs hover:bg-action"
                       >
                         <AppIcon name="book" size="sm" className="text-info" />
                         {s}
@@ -142,7 +142,7 @@ function Knowledge() {
                 <li key={s}>
                   <button
                     onClick={() => ask(s)}
-                    className="w-full rounded-md border border-default px-3 py-2 text-left text-xs hover:border-info hover:bg-action"
+                    className="w-full rounded-lg border border-default px-3 py-2 text-left text-xs hover:border-info hover:bg-action"
                   >
                     {s}
                   </button>
@@ -154,7 +154,7 @@ function Knowledge() {
           <Panel title="Recently asked (team wide)">
             <ul className="space-y-1.5 text-xs">
               {recentQuestions.map((r) => (
-                <li key={r.q} className="rounded-md bg-action px-3 py-2">
+                <li key={r.q} className="rounded-lg bg-action px-3 py-2">
                   <div>{r.q}</div>
                   <div className="mt-0.5 text-2xs text-tertiary">
                     {r.who} · {r.when}
@@ -169,7 +169,7 @@ function Knowledge() {
               {knowledgeSources.map((s) => (
                 <li
                   key={s.name}
-                  className="flex items-center gap-2 rounded-md border border-default px-3 py-2"
+                  className="flex items-center gap-2 rounded-lg border border-default px-3 py-2"
                 >
                   <AppIcon name="book" size="sm" className="text-info" />
                   {s.name}

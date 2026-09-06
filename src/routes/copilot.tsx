@@ -95,7 +95,7 @@ function Copilot() {
                 className={cn("flex gap-2.5", m.role === "user" ? "justify-end" : "justify-start")}
               >
                 {m.role === "agent" && (
-                  <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-brand">
+                  <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-brand">
                     <AppIcon name="ai" size="sm" className="text-brand-foreground" />
                   </div>
                 )}
@@ -145,7 +145,7 @@ function Copilot() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Ask the Copilot to draft, summarise, look up or update…"
-                className="flex-1 rounded-md border border-default bg-raised px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring/40"
+                className="flex-1 rounded-lg border border-default bg-raised px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring/40"
               />
               <Btn type="submit">
                 <AppIcon name="send" size="sm" /> Send
@@ -180,7 +180,7 @@ function Copilot() {
                 "RB-091 — OAuth cache bust after cert rotation",
                 "SOP-014 — P1 post incident review template",
               ].map((r) => (
-                <li key={r} className="rounded-md border border-default px-3 py-2 hover:bg-action">
+                <li key={r} className="rounded-lg border border-default px-3 py-2 hover:bg-action">
                   {r}
                 </li>
               ))}
@@ -194,7 +194,7 @@ function Copilot() {
                 ["PRB-1042", "DB connection pool exhaustion — in progress"],
                 ["INC-48102", "Prior occurrence, 4 days ago — resolved"],
               ].map(([id, d]) => (
-                <li key={id} className="flex gap-2 rounded-md border border-default px-3 py-2">
+                <li key={id} className="flex gap-2 rounded-lg border border-default px-3 py-2">
                   <span className="font-medium">{id}</span>
                   <span className="text-tertiary">{d}</span>
                 </li>
@@ -213,7 +213,7 @@ function Copilot() {
           {copilotActions.map((a) => (
             <li
               key={a.a}
-              className="flex items-center gap-2 rounded-md border border-default px-3 py-2 text-xs"
+              className="flex items-center gap-2 rounded-lg border border-default px-3 py-2 text-xs"
             >
               <span className="h-1.5 w-1.5 rounded-full bg-success" />
               {a.a}

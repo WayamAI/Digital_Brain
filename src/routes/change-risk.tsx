@@ -133,22 +133,22 @@ function ChangeRisk() {
                 ["Approver", sel.approver],
               ]}
             />
-            <p className="rounded-md bg-action px-3 py-2 text-xs leading-relaxed">{sel.note}</p>
+            <p className="rounded-lg bg-action px-3 py-2 text-xs leading-relaxed">{sel.note}</p>
 
             <section>
               <h4 className="mb-2 text-xs font-semibold uppercase tracking-wide text-tertiary">
                 Historical failure rate — similar changes
               </h4>
               <ul className="space-y-1.5 text-xs">
-                <li className="flex justify-between rounded-md border border-default px-3 py-2">
+                <li className="flex justify-between rounded-lg border border-default px-3 py-2">
                   <span>Same system, in peak window</span>
                   <span className="text-error">3 of 11 failed (27%)</span>
                 </li>
-                <li className="flex justify-between rounded-md border border-default px-3 py-2">
+                <li className="flex justify-between rounded-lg border border-default px-3 py-2">
                   <span>Same system, off peak window</span>
                   <span className="text-success">0 of 14 failed (0%)</span>
                 </li>
-                <li className="flex justify-between rounded-md border border-default px-3 py-2">
+                <li className="flex justify-between rounded-lg border border-default px-3 py-2">
                   <span>Same change type, all systems (90d)</span>
                   <span className="text-warning-content">5 of 62 failed (8%)</span>
                 </li>
@@ -170,7 +170,7 @@ function ChangeRisk() {
               <h4 className="mb-2 text-xs font-semibold uppercase tracking-wide text-tertiary">
                 Suggested window &amp; rollback readiness
               </h4>
-              <div className="rounded-md bg-success-bg px-3 py-2 text-xs text-success">
+              <div className="rounded-lg bg-success-bg px-3 py-2 text-xs text-success">
                 Suggested: Aug 17, 02:00–05:00 CT (off peak, no competing changes, full L2
                 coverage).
               </div>

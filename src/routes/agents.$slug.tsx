@@ -92,7 +92,7 @@ function AgentDetail() {
             </div>
             <ul className="space-y-1.5">
               {agent.guardrails.map((g) => (
-                <li key={g} className="rounded-md border border-default px-2.5 py-1.5 text-xs">
+                <li key={g} className="rounded-lg border border-default px-2.5 py-1.5 text-xs">
                   {g}
                 </li>
               ))}
@@ -119,7 +119,7 @@ function AgentDetail() {
             {recent.length ? (
               <ul className="space-y-2">
                 {recent.map((l) => (
-                  <li key={l.t} className="rounded-md border border-default p-2.5">
+                  <li key={l.t} className="rounded-lg border border-default p-2.5">
                     <div className="flex items-center gap-2 text-xs">
                       <span className="num text-tertiary">{l.t}</span>
                       <Pill className="ml-auto">{l.tier}</Pill>

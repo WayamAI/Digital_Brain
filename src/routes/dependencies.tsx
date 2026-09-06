@@ -220,7 +220,7 @@ function Dependencies() {
           <select
             value={sel}
             onChange={(e) => setSel(e.target.value)}
-            className="rounded-md border border-default bg-raised px-2.5 py-1.5 text-xs"
+            className="rounded-lg border border-default bg-raised px-2.5 py-1.5 text-xs"
           >
             {Object.keys(nodeInfo).map((n) => (
               <option key={n}>{n}</option>
@@ -365,14 +365,14 @@ function Dependencies() {
             {sim ? (
               <ul className="space-y-1.5 text-xs">
                 {blast.map((b) => (
-                  <li key={b} className="rounded-md border border-error/30 bg-error-bg px-3 py-2">
+                  <li key={b} className="rounded-lg border border-error/30 bg-error-bg px-3 py-2">
                     <div className="font-medium">{b}</div>
                     <div className="text-2xs text-tertiary">
                       {nodeInfo[b]?.process} · {nodeInfo[b]?.revenue}
                     </div>
                   </li>
                 ))}
-                <li className="rounded-md bg-action px-3 py-2 text-xs">
+                <li className="rounded-lg bg-action px-3 py-2 text-xs">
                   Estimated aggregate exposure:{" "}
                   <span className="font-semibold">
                     $

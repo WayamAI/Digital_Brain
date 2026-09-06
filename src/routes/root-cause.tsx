@@ -68,7 +68,7 @@ function RootCause() {
           <select
             value={id}
             onChange={(e) => setId(e.target.value)}
-            className="rounded-md border border-default bg-raised px-2.5 py-1.5 text-xs"
+            className="rounded-lg border border-default bg-raised px-2.5 py-1.5 text-xs"
           >
             {incidents.map((i) => (
               <option key={i.id} value={i.id}>
@@ -90,7 +90,7 @@ function RootCause() {
             track horizontally on narrow screens instead of letting them
             overlap or clip. min-w matches desktop width so nothing changes
             above that. */}
-        <div className="mt-2 overflow-x-auto rounded-md border border-default bg-action/40">
+        <div className="mt-2 overflow-x-auto rounded-lg border border-default bg-action/40">
           <div className="relative h-[86px] min-w-[640px]">
             <div className="absolute inset-x-4 top-1/2 h-px bg-border" />
             {(detail?.signals ?? []).map((s, i) => (
@@ -99,7 +99,7 @@ function RootCause() {
                 className="absolute -translate-x-1/2"
                 style={{ left: `${8 + i * 21}%`, top: i % 2 ? "56%" : "8%" }}
               >
-                <div className="w-[150px] rounded-md border border-default bg-raised px-2 py-1.5 shadow-sm">
+                <div className="w-[150px] rounded-lg border border-default bg-raised px-2 py-1.5 shadow-sm">
                   <div className="text-3xs text-tertiary">
                     {s.t} · {s.kind}
                   </div>
@@ -113,7 +113,7 @@ function RootCause() {
 
       <div className="mt-3 grid gap-3 xl:grid-cols-[1fr_1fr_1fr]">
         <Panel title="Logs excerpt" desc="sap-om-api · error stream">
-          <pre className="max-h-[200px] overflow-auto rounded-md bg-ink px-3 py-2.5 text-2xs leading-relaxed text-ink-foreground">
+          <pre className="max-h-[200px] overflow-auto rounded-lg bg-ink px-3 py-2.5 text-2xs leading-relaxed text-ink-foreground">
             {`14:06:02  ERROR HikariPool-1 - Connection is not available,
           request timed out after 30000ms (x2411)
 14:06:04  WARN  pool stats: total=180 active=180 idle=0 waiting=612
@@ -181,7 +181,7 @@ function RootCause() {
                 "No change events in the window; cause attributed to scheduled platform behaviour.",
               ]
             ).map((r) => (
-              <li key={r} className="rounded-md bg-action px-3 py-2 text-xs leading-snug">
+              <li key={r} className="rounded-lg bg-action px-3 py-2 text-xs leading-snug">
                 {r}
               </li>
             ))}
@@ -208,7 +208,7 @@ function RootCause() {
               ["CFG-2201", "HANA statement cache raised to 12k", "11:20 UTC", "diff · 1 parameter"],
               ["CHG-3386", "Cert rotation api-gw-latam", "13:40 UTC", "diff · 2 certs"],
             ].map(([id2, d, t, diff]) => (
-              <li key={id2} className="rounded-md border border-default px-3 py-2">
+              <li key={id2} className="rounded-lg border border-default px-3 py-2">
                 <div className="flex gap-2">
                   <span className="font-medium">{id2}</span>
                   <span className="text-tertiary">{d}</span>

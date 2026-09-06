@@ -145,7 +145,7 @@ function IncidentDetail() {
                 ["Autonomy tier", <Pill key="t">{scenario.tier}</Pill>],
               ]}
             />
-            <p className="mt-3 rounded-md bg-action px-3 py-2 text-2xs leading-relaxed text-tertiary">
+            <p className="mt-3 rounded-lg bg-action px-3 py-2 text-2xs leading-relaxed text-tertiary">
               Anything below 60% confidence is escalated to a named human owner automatically,
               whatever tier the action would otherwise sit in.
             </p>

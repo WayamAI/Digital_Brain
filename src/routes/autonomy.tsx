@@ -97,7 +97,7 @@ function AutonomyPage() {
             {alwaysTier3.map((t) => (
               <li
                 key={t}
-                className="flex items-start gap-2 rounded-md border border-default px-2.5 py-2 text-xs"
+                className="flex items-start gap-2 rounded-lg border border-default px-2.5 py-2 text-xs"
               >
                 <AppIcon name="lock" size="sm" className="mt-0.5 shrink-0 text-error" />
                 {t}

@@ -104,7 +104,7 @@ function Problems() {
               <h4 className="mb-2 text-xs font-semibold uppercase tracking-wide text-tertiary">
                 Root cause writeup
               </h4>
-              <p className="rounded-md bg-action px-3 py-2 text-xs leading-relaxed">
+              <p className="rounded-lg bg-action px-3 py-2 text-xs leading-relaxed">
                 {sel.writeup}
               </p>
             </section>

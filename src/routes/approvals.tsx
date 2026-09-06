@@ -119,7 +119,7 @@ function ApprovalQueue() {
                 "Rejected APR-765 — Restart HANA secondary node (deferred to CAB) · 07:55",
               ]
           ).map((l) => (
-            <li key={l} className="rounded-md border border-default px-3 py-2">
+            <li key={l} className="rounded-lg border border-default px-3 py-2">
               {l}
             </li>
           ))}
@@ -144,10 +144,10 @@ function ApprovalQueue() {
                 ["Impact if wrong", sel.impact],
               ]}
             />
-            <div className="rounded-md bg-success-bg px-3 py-2 text-xs text-success">
+            <div className="rounded-lg bg-success-bg px-3 py-2 text-xs text-success">
               {sel.history}
             </div>
-            <div className="rounded-md border border-default px-3 py-2.5">
+            <div className="rounded-lg border border-default px-3 py-2.5">
               <div className="text-2xs font-semibold uppercase tracking-wide text-tertiary">
                 Where this came from
               </div>

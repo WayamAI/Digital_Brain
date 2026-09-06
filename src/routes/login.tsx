@@ -132,7 +132,7 @@ function Login() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@company.com"
-                    className="mt-1.5 w-full rounded-md border border-default bg-page px-3 py-2 text-sm text-primary placeholder:text-tertiary focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
+                    className="mt-1.5 w-full rounded-lg border border-default bg-page px-3 py-2 text-sm text-primary placeholder:text-tertiary focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
                   />
                 </div>
 
@@ -148,7 +148,7 @@ function Login() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="Enter your password"
-                      className="w-full rounded-md border border-default bg-page px-3 py-2 pr-9 text-sm text-primary placeholder:text-tertiary focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
+                      className="w-full rounded-lg border border-default bg-page px-3 py-2 pr-9 text-sm text-primary placeholder:text-tertiary focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
                     />
                     <button
                       type="button"
@@ -166,7 +166,7 @@ function Login() {
                 </div>
 
                 {error && (
-                  <p className="rounded-md border border-error/25 bg-error-bg px-3 py-2 text-xs text-error">
+                  <p className="rounded-lg border border-error/25 bg-error-bg px-3 py-2 text-xs text-error">
                     {error}
                   </p>
                 )}
