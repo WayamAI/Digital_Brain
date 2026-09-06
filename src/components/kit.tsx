@@ -112,7 +112,7 @@ export function Panel({
   pad?: boolean | undefined;
 }) {
   return (
-    <section className={cn("card-surface flex h-full flex-col", className)}>
+    <section className={cn("card-surface flex flex-col", className)}>
       {(title || right) && (
         <header className="flex items-start gap-3 border-b border-muted px-4 py-2.5">
           <div className="min-w-0">
@@ -164,7 +164,7 @@ export function Kpi({
   const lit = { ok: 5, info: 4, warn: 3, human: 3, crit: 2, muted: 1 }[tone];
   const t = trend ? readTrend(trend) : null;
   return (
-    <div className="card-surface transition-ui flex h-full flex-col p-3.5 hover:border-active">
+    <div className="card-surface transition-ui flex flex-col p-3.5 hover:border-active">
       {/* Two lines are reserved for the label whether or not it needs them.
           Without this a one-line label lifts its metric above its neighbours
           and the row of tiles reads as ragged. */}
