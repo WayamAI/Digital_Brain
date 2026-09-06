@@ -216,17 +216,21 @@
   /* -- stroke ----------------------------------------------------------- */
   --stroke-default: var(--ref-gray-200);
   --stroke-active: var(--ref-gray-300);
-  --stroke-muted: #f0f0f0;
+  --stroke-muted: var(--ref-gray-100);
   --stroke-disabled: var(--ref-gray-100);
   --stroke-on-color: rgb(255 255 255 / 0.24);
 
-  /* -- surface ---------------------------------------------------------- */
-  --surface-page-background: var(--ref-gray-50);
+  /* -- surface ----------------------------------------------------------
+     Light mode earns its hierarchy from the ground, not from borders. The
+     page sits at gray-100 so white containers and cards read as genuinely
+     lifted off it; at gray-50 the whole screen was within 3% luminance of
+     itself and every card looked flat. */
+  --surface-page-background: var(--ref-gray-100);
   --surface-container: var(--ref-white);
-  --surface-action: #f0f0f0;
+  --surface-action: var(--ref-gray-100);
   --surface-raised: var(--ref-white);
   --surface-raised-x2: var(--ref-gray-50);
-  --surface-scroll-bar: rgb(0 0 0 / 0.22);
+  --surface-scroll-bar: rgb(0 0 0 / 0.2);
 
   /* -- action surfaces --------------------------------------------------- */
   --action-surface-primary-default: var(--ref-gray-900);
@@ -244,8 +248,8 @@
   --action-surface-secondary-content-disabled: var(--ref-gray-400);
 
   --action-surface-tertiary-default: transparent;
-  --action-surface-tertiary-hover: #f0f0f0;
-  --action-surface-tertiary-focused: var(--ref-gray-100);
+  --action-surface-tertiary-hover: var(--ref-gray-100);
+  --action-surface-tertiary-focused: var(--ref-gray-200);
   --action-surface-tertiary-disabled: transparent;
   --action-surface-tertiary-content: var(--ref-gray-700);
   --action-surface-tertiary-content-disabled: var(--ref-gray-400);
@@ -264,7 +268,7 @@
   --feedback-neutral-content: var(--ref-gray-700);
   --feedback-neutral-icon: var(--ref-gray-600);
   --feedback-neutral-stroke: var(--ref-gray-200);
-  --feedback-neutral-background: #f0f0f0;
+  --feedback-neutral-background: var(--ref-gray-100);
 
   /* orange-900 lands at 3.79:1 on white — one step deeper clears AA. */
   --feedback-warning-content: var(--ref-deep-orange-900);
@@ -301,8 +305,8 @@
   --ink-foreground: var(--ref-gray-50);
   --ink-muted: var(--ref-gray-400);
 
-  --elevation-card: 0 1px 2px rgb(15 15 15 / 0.06);
-  --elevation-raised: 0 4px 16px rgb(15 15 15 / 0.08);
+  --elevation-card: 0 1px 2px rgb(15 15 15 / 0.05), 0 1px 3px -1px rgb(15 15 15 / 0.07);
+  --elevation-raised: 0 2px 6px -2px rgb(15 15 15 / 0.06), 0 8px 20px -6px rgb(15 15 15 / 0.12);
 }
 
 /* ============================================================================
