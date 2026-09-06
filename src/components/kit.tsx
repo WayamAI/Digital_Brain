@@ -1,5 +1,6 @@
 import { useMemo, useState, type ReactNode } from "react";
 import { AppIcon } from "@/components/app-icon";
+import type { IconName } from "@/components/icons";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -111,7 +112,7 @@ export function Panel({
   pad?: boolean | undefined;
 }) {
   return (
-    <section className={cn("card-surface flex flex-col", className)}>
+    <section className={cn("card-surface flex h-full flex-col", className)}>
       {(title || right) && (
         <header className="flex items-start gap-3 border-b border-muted px-4 py-2.5">
           <div className="min-w-0">
@@ -124,6 +125,22 @@ export function Panel({
       <div className={cn("min-w-0 flex-1", pad && "p-4")}>{children}</div>
     </section>
   );
+}
+
+/**
+ * Trend strings arrive in several shapes — "↑ 0.8%", "↓ 88%", "→ 0",
+ * "+1 vs. yesterday", "SLA 15 min". Parse the direction off the front so the
+ * tile can draw one real arrow icon instead of shipping a glyph in the copy
+ * (and rendering two arrows side by side).
+ */
+function readTrend(trend: string): { icon: IconName | null; text: string } {
+  const t = trend.trim();
+  if (t.startsWith("\u2191")) return { icon: "arrowUp", text: t.slice(1).trim() };
+  if (t.startsWith("\u2193")) return { icon: "arrowDown", text: t.slice(1).trim() };
+  if (t.startsWith("\u2192")) return { icon: "arrowRight", text: t.slice(1).trim() };
+  if (t.startsWith("+")) return { icon: "arrowUp", text: t };
+  if (t.startsWith("-")) return { icon: "arrowDown", text: t };
+  return { icon: null, text: t };
 }
 
 /**
@@ -145,17 +162,16 @@ export function Kpi({
   trend?: string | undefined;
 }) {
   const lit = { ok: 5, info: 4, warn: 3, human: 3, crit: 2, muted: 1 }[tone];
-  const rising = trend?.trim().startsWith("+");
+  const t = trend ? readTrend(trend) : null;
   return (
-    <div className="card-surface transition-ui relative p-3.5 hover:border-active">
-      <div className="flex items-center gap-2">
-        <span className="type-label-sm text-quaternary">{label}</span>
-      </div>
-      {/* The value stays neutral; the segmented bar and the trend carry the
-          state colour. A wall of coloured hero numbers reads as noise. */}
-      <div className="mt-2 type-display-metric text-primary">{value}</div>
+    <div className="card-surface transition-ui flex h-full flex-col p-3.5 hover:border-active">
+      {/* Two lines are reserved for the label whether or not it needs them.
+          Without this a one-line label lifts its metric above its neighbours
+          and the row of tiles reads as ragged. */}
+      <span className="line-clamp-2 min-h-[2.1em] type-label-sm text-quaternary">{label}</span>
+      <div className="mt-1.5 type-display-metric text-primary">{value}</div>
       {/* Segmented status bar — five steps, lit according to tone. */}
-      <div className="mt-2.5 flex gap-1" aria-hidden>
+      <div className="mt-3 flex gap-1" aria-hidden>
         {[0, 1, 2, 3, 4].map((i) => (
           <span
             key={i}
@@ -163,17 +179,18 @@ export function Kpi({
           />
         ))}
       </div>
-      <div className="mt-2 flex items-baseline gap-2">
+      {/* Pinned to the bottom edge, so every footer in the row shares a line. */}
+      <div className="mt-auto flex items-end gap-2 pt-2.5">
         {sub && <span className="type-caption text-tertiary">{sub}</span>}
-        {trend && (
+        {t && (
           <span
             className={cn(
-              "num ml-auto inline-flex items-center gap-1 type-caption font-medium",
+              "num ml-auto inline-flex shrink-0 items-center gap-1 type-caption font-medium",
               TONE_TEXT[tone],
             )}
           >
-            <AppIcon name={rising ? "arrowUp" : "arrowDown"} size="xs" />
-            {trend}
+            {t.icon && <AppIcon name={t.icon} size="xs" />}
+            {t.text}
           </span>
         )}
       </div>

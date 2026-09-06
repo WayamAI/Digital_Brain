@@ -164,14 +164,12 @@ function ControlTower() {
         <div className="flex flex-wrap items-stretch gap-2">
           {loopStages.map((s, i) => (
             <div key={s.stage} className="flex flex-1 items-center gap-2">
-              <div className="min-w-[130px] flex-1 rounded-md border border-default bg-action/50 px-3 py-2.5">
-                <div className="text-2xs font-semibold uppercase tracking-wide text-tertiary">
-                  {s.stage}
+              <div className="flex h-full min-w-[130px] flex-1 flex-col rounded-xl border border-default bg-action/60 px-3 py-2.5">
+                <span className="type-label-sm text-quaternary">{s.stage}</span>
+                <div className="mt-1.5 font-display text-display-lg text-primary num">
+                  {s.count.toLocaleString()}
                 </div>
-                <div className="num mt-1 text-xl font-bold tabular-nums">
-                  <span className="inline-block animate-pulse">{s.count.toLocaleString()}</span>
-                </div>
-                <div className="mt-0.5 text-3xs text-tertiary">{s.note}</div>
+                <div className="mt-auto pt-1.5 type-caption text-tertiary">{s.note}</div>
               </div>
               {i < loopStages.length - 1 && (
                 <AppIcon

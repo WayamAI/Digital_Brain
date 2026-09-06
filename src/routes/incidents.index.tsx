@@ -57,9 +57,9 @@ function IncidentQueue() {
           ["Escalated", "2", "text-warning-content"],
           ["Avg confidence on active diagnoses", "87%", "text-primary"],
         ].map(([l, v, t]) => (
-          <div key={l} className="card-surface px-3.5 py-3">
-            <div className="text-2xs uppercase tracking-wide text-tertiary">{l}</div>
-            <div className={cn("mt-1 type-display-metric", t)}>{v}</div>
+          <div key={l} className="card-surface flex h-full flex-col px-3.5 py-3">
+            <span className="line-clamp-2 min-h-[2.1em] type-label-sm text-quaternary">{l}</span>
+            <div className={cn("mt-auto pt-1.5 type-display-metric", t)}>{v}</div>
           </div>
         ))}
       </div>
